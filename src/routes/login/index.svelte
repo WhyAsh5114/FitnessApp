@@ -1,7 +1,7 @@
 <script type="typescript">
-    import Title from "../title.svelte";
+    import Title from "/src/components/title.svelte";
     import LoginForm from "./login_form.svelte";
-    import Footer from "../footer.svelte";
+    import Footer from "/src/components/footer.svelte";
 </script>
 
 <div class="bg-slate-800 grid items-center place-items-center min-h-screen justify-center" id="main-container">

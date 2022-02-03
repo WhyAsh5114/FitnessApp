@@ -1,7 +1,7 @@
 <script type="typescript">
-    import Title from "./title.svelte";
-    import Footer from "./footer.svelte";
-    import MenuGrid from "./app/menu_grid.svelte";
+    import Title from "/src/components/title.svelte";
+    import Footer from "/src/components/footer.svelte";
+    import MenuGrid from "./app/home_grid.svelte";
 </script>
 
 
