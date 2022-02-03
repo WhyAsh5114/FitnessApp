@@ -1,13 +1,13 @@
-<script type="typescript">
+<script>
     import Title from "/src/components/title.svelte";
     import Footer from "/src/components/footer.svelte";
-    import MenuGrid from "./app/home_grid.svelte";
+    import SplitsGrid from "./splits_grid.svelte";
 </script>
 
 <link rel="stylesheet" href="/src/global.css">
 
 <div class="bg-slate-800 grid items-center place-items-center min-h-screen justify-center w-screen menu-container">
     <Title />
-    <MenuGrid />
+    <SplitsGrid />
     <Footer />
 </div>

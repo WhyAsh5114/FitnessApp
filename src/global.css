@@ -1,0 +1,4 @@
+.menu-container
+{
+    grid-template-rows: 1fr 5fr 1fr;
+}
