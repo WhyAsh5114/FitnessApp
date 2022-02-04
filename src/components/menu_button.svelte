@@ -1,7 +1,6 @@
 <script>
-    export let color, imgPath, imgTailwind, title, content;
     // @ts-ignore
-    let link = title.toLowerCase()
+    export let color, imgPath, imgTailwind, title, content, link = title.toLowerCase();
 </script>
 
 <a href="{link}" class="{color} rounded-xl md:rounded-2xl lg:rounded-3xl grid place-items-center grid-cols-3 gap-3 shadow-md shadow-black 
