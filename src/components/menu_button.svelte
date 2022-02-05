@@ -1,13 +1,13 @@
 <script>
     // @ts-ignore
-    export let color, imgPath, imgTailwind, title, content, link = title.toLowerCase();
+    export let color, imgPath, title, content, link = title.toLowerCase();
 </script>
 
-<a href="{link}" class="{color} rounded-xl md:rounded-2xl lg:rounded-3xl grid place-items-center grid-cols-3 gap-3 shadow-md shadow-black 
+<a href="{link}" class="{color} min-h-fit rounded-xl md:rounded-2xl lg:rounded-3xl grid place-items-center grid-cols-3 gap-3 shadow-md shadow-black 
 hover:brightness-90 hover:shadow-black hover:shadow-xl" style="grid-template-columns: 1fr 2fr">
-    <img src="{imgPath}" alt="{title}" class="{imgTailwind} p-5">
-    <div class="grid grid-rows-2 w-full h-3/4 md:h-1/2 items-center">
-        <h2 class="text-white font-semibold text-2xl md:text-3xl lg:text-4xl text-left w-full pr-2">
+    <img src="{imgPath}" alt="{link}" class="button-img">
+    <div class="grid grid-rows-2 w-full h-5/6 md:h-2/3 items-center">
+        <h2 class="text-white font-semibold text-xl md:text-3xl lg:text-4xl text-left w-full pr-2">
             {title}
         </h2>
         <p class="text-white text-md md:text-xl lg:text-2xl w-full text-left pr-2">
@@ -15,3 +15,11 @@ hover:brightness-90 hover:shadow-black hover:shadow-xl" style="grid-template-col
         </p>
     </div>
 </a>
+
+<style>
+    .button-img
+    {
+        max-width: 60%;
+        max-height: 60%;
+    }
+</style>
