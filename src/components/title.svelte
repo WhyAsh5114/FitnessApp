@@ -5,5 +5,5 @@
         </svg>
         <a href="/" class="my-3 py-2 font-extrabold text-4xl md:text-5xl lg:text-6xl tracking-wide text-white px-2 h-min">MyFit</a>
     </div>
-    <a href="login"><img src="/profile.png" alt="profile" class="w-11 md:w-14 lg:w-20 mr-3"></a>
+    <a href="/login"><img src="/profile.png" alt="profile" class="w-11 md:w-14 lg:w-20 mr-3"></a>
 </div>
