@@ -3,8 +3,6 @@
     import MenuButton from "/src/components/menu_button.svelte";
 </script>
 
-<link rel="stylesheet" href="/src/global.css">
-
 <BasePage>
     
 </BasePage>
