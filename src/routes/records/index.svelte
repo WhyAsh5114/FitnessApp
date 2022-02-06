@@ -6,9 +6,11 @@
 
 <BasePage>
     <MenuButtonGrid>
-        <MenuButton title="Splits Records" color="bg-cyan-700" content="Log your workout with or without a template" imgPath=""/>
-        <MenuButton title="Workout Records" color="bg-teal-700" content="Duration, calories burned, average heart rate" imgPath=""/>
-        <MenuButton title="Cardio, Nutrition, Sleep" color="bg-emerald-700" content="Calorie intake, macronutrients, foods" imgPath=""/>
-        <MenuButton title="Log Sleep" color="bg-green-700" content="Calorie intake, macronutrients, foods" imgPath=""/>
+        <MenuButton title="Splits Records" color="bg-pink-700" content="Split exercises, workouts, progression" imgPath="/calendar.svg"/>
+        <MenuButton title="Workout Records" color="bg-slate-600" content="Reps, sets, load, duration, calories burned" imgPath="/dumbbell.svg"/>
+        <MenuButton title="Cardio Records" color="bg-red-700" content="Duration, calories burned, average heart rate" imgPath="/heart.svg"/>
+        <MenuButton title="Nutrition Records" color="bg-green-700" content="Calorie intake, macronutrients, foods" imgPath="/bowl.svg"/>
+        <MenuButton title="Sleep Records" color="bg-purple-700" content="Duration, quality, tiredness, wake up time" imgPath="/moon.svg"/>
+        <MenuButton title="Body Stats Records" color="bg-blue-700" content="Steps, weight, height, fat percentage" imgPath="/scale.svg"/>
     </MenuButtonGrid>
 </BasePage>
