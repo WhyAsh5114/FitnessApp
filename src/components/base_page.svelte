@@ -10,10 +10,12 @@
     }
 </style>
 
-<div class="bg-slate-800 grid items-center place-items-center min-h-screen justify-center w-screen menu-container">
+<div class="bg-slate-800 grid min-h-screen w-full place-items-center menu-container">
     <Title />
     <slot>
-        <div></div>
+        <div>
+
+        </div>
     </slot>
     <Footer />
 </div>
