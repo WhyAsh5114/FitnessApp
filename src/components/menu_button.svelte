@@ -7,10 +7,10 @@
 hover:brightness-90 hover:shadow-black hover:shadow-xl">
     <img src="{imgPath}" alt="{link}" class="button-img">
     <div class="grid grid-rows-2 w-full h-5/6 md:h-2/3 items-center col-span-2">
-        <h2 class="text-white font-semibold text-xl md:text-3xl lg:text-4xl text-left w-full pr-2">
+        <h2 class="text-white font-semibold text-xl md:text-2xl lg:text-3xl xl:text-4xl text-left w-full pr-2">
             {title}
         </h2>
-        <p class="text-white text-md md:text-xl lg:text-2xl w-full text-left pr-2">
+        <p class="text-white text-md md:text-lg lg:text-xl xl:text-2xl w-full text-left pr-2">
             {content}
         </p>
     </div>
