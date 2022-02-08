@@ -1,6 +1,5 @@
 <script type="typescript">
-	// @ts-ignore: some vite and ts linting issue due to baseURL/file paths, TODO: fix this...
-	import { SplitName, SplitSchedule } from '/src/store';
+	import { SplitName, SplitSchedule } from './newSplitStore';
 	import BasePage from '/src/components/base_page.svelte';
 
 	let split_name: string = '';
