@@ -68,11 +68,13 @@
 				{/if}
 			</div>
 		</div>
-		<ExerciseTable
-			exercise_data={split_workouts[current_workout]}
-			table_type="split"
-			split_workout_name={current_workout}
-		/>
+		{#key current_workout}
+			<ExerciseTable
+				exercise_data={split_schedule[current_workout]}
+				table_type="split"
+				split_workout_name={current_workout}
+			/>
+		{/key}
 		<div class="text-white text-center h-14 bg-blue-500">
 			{#if valid}
 				<a href="/" class="w-full">Set split options</a>
