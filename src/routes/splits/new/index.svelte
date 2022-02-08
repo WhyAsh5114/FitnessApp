@@ -4,26 +4,29 @@
 	import BasePage from '/src/components/base_page.svelte';
 
 	let split_name: string = '';
-	let number_of_workouts: number = 0;
-	let days: Array<string> = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
-	let workouts: Array<string> = ['', '', '', '', '', '', ''];
-	let valid: boolean = false;
+	let split_schedule: string[] = [];
+	let is_split_valid: boolean = false;
 
-    SplitName.subscribe((value: string) => {
-        split_name = value;
-    })
+	let days: string[] = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+	let unique_workouts: string[];
 
-	SplitSchedule.subscribe((value: string[]) => {
-		workouts = value;
+	SplitName.subscribe((value: string) => {
+		split_name = value;
 	});
 
-	update_value();
+	SplitSchedule.subscribe((value: string[]) => {
+		split_schedule = value;
+	});
 
-	function check_validity() {
-		if (split_name !== '' && number_of_workouts > 0) {
-			valid = true;
+	// Update the split name and schedule immediately after page load
+	// So that the entered schedule is not lost when redirected to a new page
+	update_unique_workouts();
+
+	function check_split_validity() {
+		if (split_name !== '' && unique_workouts.length > 0) {
+			is_split_valid = true;
 		} else {
-			valid = false;
+			is_split_valid = false;
 		}
 	}
 
@@ -33,35 +36,54 @@
 		if (split_name === '') {
 			error += 'Enter split name';
 		}
-		if (number_of_workouts === 0) {
+		if (unique_workouts.length === 0) {
 			if (error === '') {
 				error += 'Enter at least 1 workout';
 			} else {
 				error += '\nEnter at least 1 workout';
 			}
 		}
-        alert(error);
+		alert(error);
 	}
 
-	function update_value() {
-		let unique_workouts: Array<String> = [];
-		workouts.forEach((workout, i) => {
-			workouts[i] = workouts[i].charAt(0).toUpperCase() + workouts[i].slice(1);
+	// Called everytime a day input (mon, tue, wed.. input) is changed
+	function update_unique_workouts() {
+		unique_workouts = [];
+		split_schedule.forEach((workout, i) => {
+			// Capitalise the first letter of the workout in the split_schedule
+			split_schedule[i] = split_schedule[i].charAt(0).toUpperCase() + split_schedule[i].slice(1);
+
+			// Remove the workout from the split_schedule if its rest
+			if (workout.toLowerCase() === 'rest') {
+				split_schedule[i] = '';
+			}
+
+			// Add the workout to unique_workouts if its new and isn't blank or rest
+			if (!unique_workouts.includes(workout) && workout !== '' && workout !== 'rest') {
+				unique_workouts.push(workout);
+			}
+		});
+		// After a possible change in the number of split_schedule, update the validity of the split
+		check_split_validity();
+	}
+
+	function save_split() {
+		SplitName.set(split_name);
+		SplitSchedule.set(split_schedule);
+
+		let unique_workouts: string[] = [];
+		split_schedule.forEach((workout, i) => {
+			split_schedule[i] = split_schedule[i].charAt(0).toUpperCase() + split_schedule[i].slice(1);
 			workout = workout.toLowerCase();
 			if (workout === 'rest') {
-				workouts[i] = '';
+				split_schedule[i] = '';
 			}
 			if (!unique_workouts.includes(workout) && workout !== '' && workout !== 'rest') {
 				unique_workouts.push(workout);
 			}
 		});
-		number_of_workouts = unique_workouts.length;
-		check_validity();
-	}
-
-	function save_split() {
-        SplitName.set(split_name);
-		SplitSchedule.set(workouts);
+		console.log(split_schedule);
+		console.log(unique_workouts);
 	}
 </script>
 
@@ -71,7 +93,7 @@
 		<div class="grid grid-cols-2 rounded-md">
 			<h3 class="text-xl text-white text-center font-semibold">Name</h3>
 			<input
-				on:change={check_validity}
+				on:change={check_split_validity}
 				bind:value={split_name}
 				type="text"
 				class="text-center outline-none rounded-sm font-semibold shadow-black shadow-sm mr-5"
@@ -84,8 +106,8 @@
 						{day}
 					</p>
 					<input
-						bind:value={workouts[i]}
-						on:change={update_value}
+						bind:value={split_schedule[i]}
+						on:change={update_unique_workouts}
 						type="text"
 						placeholder="Rest"
 						class="text-center mr-5 outline-none p-0.5 rounded-sm font-medium shadow-black shadow-sm"
@@ -94,17 +116,17 @@
 			{/each}
 		</div>
 		<div class="py-1 border-pink-600 border-2 rounded-full px-4">
-			{#if valid}
+			{#if is_split_valid}
 				<a
 					href="/splits/new/workouts"
 					on:click={save_split}
 					class="text-white font-semibold text-lg outline-none"
 				>
-					Create {number_of_workouts} workouts
+					Create {unique_workouts.length} workouts
 				</a>
 			{:else}
 				<button class="text-white font-semibold text-lg outline-none" on:click={show_error}>
-					Create {number_of_workouts} workouts
+					Create {unique_workouts.length} workouts
 				</button>
 			{/if}
 		</div>
