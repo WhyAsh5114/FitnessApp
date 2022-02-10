@@ -1,5 +1,5 @@
-<script type="typescript">
-	import { SplitName, SplitSchedule } from './newSplitStore';
+<script lang="ts">
+	import { SplitName, SplitSchedule, SplitWorkouts } from './newSplitStore';
 	import BasePage from '/src/components/base_page.svelte';
 
 	let split_name: string = '';
@@ -49,11 +49,8 @@
 	function update_unique_workouts() {
 		unique_workouts = [];
 		split_schedule.forEach((workout, i) => {
-			// Capitalise the first letter of the workout in the split_schedule
-			split_schedule[i] = split_schedule[i].charAt(0).toUpperCase() + split_schedule[i].slice(1);
-
 			// Remove the workout from the split_schedule if its rest
-			if (workout.toLowerCase() === 'rest') {
+			if (workout === 'rest') {
 				split_schedule[i] = '';
 			}
 
@@ -62,6 +59,7 @@
 				unique_workouts.push(workout);
 			}
 		});
+		
 		// After a possible change in the number of split_schedule, update the validity of the split
 		check_split_validity();
 	}
@@ -70,19 +68,11 @@
 		SplitName.set(split_name);
 		SplitSchedule.set(split_schedule);
 
-		let unique_workouts: string[] = [];
-		split_schedule.forEach((workout, i) => {
-			split_schedule[i] = split_schedule[i].charAt(0).toUpperCase() + split_schedule[i].slice(1);
-			workout = workout.toLowerCase();
-			if (workout === 'rest') {
-				split_schedule[i] = '';
-			}
-			if (!unique_workouts.includes(workout) && workout !== '' && workout !== 'rest') {
-				unique_workouts.push(workout);
-			}
+		let split_workouts: Object = {};
+		unique_workouts.forEach((workout: string) => {
+			split_workouts[workout] = [];
 		});
-		console.log(split_schedule);
-		console.log(unique_workouts);
+		SplitWorkouts.set(split_workouts);
 	}
 </script>
 
