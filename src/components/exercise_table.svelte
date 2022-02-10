@@ -1,7 +1,8 @@
 <script lang="ts">
-import { onMount } from "svelte";
+	import { onMount } from 'svelte';
+	import { to_number } from 'svelte/internal';
 
-	import { SplitWorkouts } from "../routes/splits/new/newSplitStore";
+	import { SplitWorkouts } from '../routes/splits/new/newSplitStore';
 
 	export let exercise_data: string[][];
 	export let table_type: string;
@@ -12,35 +13,68 @@ import { onMount } from "svelte";
 	let split_workouts: Object;
 	SplitWorkouts.subscribe((value: Object) => {
 		split_workouts = value;
-	})
-	
+	});
+
 	onMount(() => {
-		if(exercise_data !== undefined) {
+		if (exercise_data !== undefined) {
 			exercise_data.forEach((exercise) => {
 				add_entry(exercise);
 			});
 		}
-	})
+	});
 
 	function add_entry(entry: string[] = ['', '', '', '', '']) {
-		if (true) {
-			let exercise_div: HTMLDivElement = document.createElement("div");
-			exercise_div.className = 'grid grid-cols-5 gap-1'
+		let last_entry: ChildNode = exercise_grid.children[exercise_grid.children.length - 1];
+		let last_entry_valid: boolean = false;
+		if (last_entry === undefined) {
+			last_entry_valid = true;
+		} else {
+			let last_entry_value: string[] = [];
+			for (let i = 0; i < last_entry.childNodes.length; i++) {
+				last_entry_value.push(last_entry.childNodes[i].textContent);
+			}
+			last_entry_valid = check_entry(last_entry_value);
+		}
+
+		if (last_entry_valid) {
+			let exercise_div: HTMLDivElement = document.createElement('div');
+			exercise_div.className = 'grid grid-cols-5 gap-1';
 			exercise_div.style.gridTemplateColumns = '1fr 4fr 1fr 1fr 1fr';
 			entry.forEach((stat, i) => {
 				let entry = document.createElement('p');
 				entry.className = 'text-center text-white bg-blue-600 min-w-max h-6 outline-none';
-				if(i === 0) {
+				if (i === 0) {
 					entry.textContent = (exercise_grid.children.length + 1).toString();
 				} else {
-					entry.contentEditable = "true";
+					entry.contentEditable = 'true';
 					entry.textContent = stat;
-					entry.onblur = () => {update_store()};
+					entry.onblur = () => {
+						update_store();
+					};
 				}
 				exercise_div.appendChild(entry);
 			});
 			exercise_grid.appendChild(exercise_div);
 		}
+	}
+
+	function check_entry(entry: string[]) {
+		// Make sure reps, sets and load is a number
+		for (let i = 2; i < 5; i++) {
+			try {
+				if (isNaN(to_number(entry[i])) || entry[i] === "") {
+					return false;
+				}
+			} catch (error) {
+				return false;
+			}
+		}
+
+		// Make sure exercise name is not empty
+		if (entry[1] === '') {
+			return false;
+		}
+		return true;
 	}
 
 	function clear_all_entries() {
@@ -50,12 +84,12 @@ import { onMount } from "svelte";
 	}
 
 	function update_store() {
-		if(table_type === "split") {
+		if (table_type === 'split') {
 			let all_exercises: string[][] = [];
 			let number_of_exercises: number = exercise_grid.children.length;
-			for(let i = 0; i < number_of_exercises; i++) {
+			for (let i = 0; i < number_of_exercises; i++) {
 				let exercise: string[] = [];
-				for(let j = 0; j < 5; j++) {
+				for (let j = 0; j < 5; j++) {
 					exercise.push(exercise_grid.children[i].children[j].textContent);
 				}
 				all_exercises.push(exercise);
