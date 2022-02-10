@@ -70,7 +70,7 @@
 		</div>
 		{#key current_workout}
 			<ExerciseTable
-				exercise_data={split_schedule[current_workout]}
+				exercise_data={split_workouts[current_workout]}
 				table_type="split"
 				split_workout_name={current_workout}
 			/>
