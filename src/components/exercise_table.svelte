@@ -2,8 +2,8 @@
 	import { onMount } from 'svelte';
 	import { to_number } from 'svelte/internal';
 
-	import { openModal } from 'svelte-modals'
-  	import Modal from './basic_modal.svelte'
+	import { openModal } from 'svelte-modals';
+	import Modal from './basic_modal.svelte';
 
 	import { SplitWorkouts } from '../routes/splits/new/newSplitStore';
 
@@ -16,7 +16,7 @@
 
 	let add_btn: HTMLButtonElement;
 	let clear_btn: HTMLButtonElement;
-	let rearrange_btn: HTMLButtonElement;
+	let reorder_btn: HTMLButtonElement;
 
 	let split_workouts: Object;
 	SplitWorkouts.subscribe((value: Object) => {
@@ -29,7 +29,7 @@
 
 	function load_entries() {
 		exercise_grid.textContent = '';
-		split_workouts[split_workout_name] = split_workouts[split_workout_name]
+		split_workouts[split_workout_name] = split_workouts[split_workout_name];
 		if (split_workouts[split_workout_name] !== undefined) {
 			split_workouts[split_workout_name].forEach((exercise) => {
 				add_entry(exercise);
@@ -59,10 +59,10 @@
 				entry.className = 'bg-blue-600 text-center text-white min-w-max h-6 outline-none';
 				// Prevent enter key from adding new line (make the element single line)
 				entry.addEventListener('keydown', (e) => {
-					if(e.key === "Enter") {
-						e.preventDefault()
+					if (e.key === 'Enter') {
+						e.preventDefault();
 					}
-				})
+				});
 				if (i === 0) {
 					entry.textContent = (exercise_grid.children.length + 1).toString();
 				} else {
@@ -79,39 +79,37 @@
 	}
 
 	function is_entry_valid(entry: string[]) {
-		let error: string = "";
+		let error: string = '';
 
 		// Make sure reps, sets and load is a number
 		for (let i = 2; i < 5; i++) {
 			try {
 				if (isNaN(to_number(entry[i])) || entry[i] === '') {
-					if(error === "") {
-						error += "Reps, Sets and Load should be a number"
+					if (error === '') {
+						error += 'Reps, Sets and Load should be a number';
 					}
 				}
 			} catch (error) {
-				if(error === "") {
-					error += "Reps, Sets and Load should be a number"
+				if (error === '') {
+					error += 'Reps, Sets and Load should be a number';
 				}
 			}
 		}
 
 		// Make sure exercise name is not empty
 		if (entry[1] === '') {
-			if(error === "") {
-				error += "Exercise name should not be empty"
+			if (error === '') {
+				error += 'Exercise name should not be empty';
 			} else {
-				console.log("correct")
-				error += ", exercise name should not be empty"
+				error += ', exercise name should not be empty';
 			}
 		}
-		
-		if(error === "") {
+
+		if (error === '') {
 			return true;
 		} else {
-			console.log(error)
-			openModal(Modal, { title: "Error", message: error })
-			return false
+			openModal(Modal, { title: 'Error', message: error });
+			return false;
 		}
 	}
 
@@ -125,7 +123,7 @@
 	function toggle_edit_mode() {
 		if (editing) {
 			editing = false;
-			rearrange_btn.textContent = 'Rearrange';
+			reorder_btn.textContent = 'Reorder';
 
 			// Re-enable add and clear buttons
 			add_btn.disabled = false;
@@ -141,22 +139,22 @@
 			let new_split_workouts: string[][] = [];
 			Array.from(editing_grid.childNodes).forEach((editing_entry, i) => {
 				Array.from(exercise_grid.childNodes).forEach((exercise_entry, j) => {
-					if(exercise_entry.childNodes[0].textContent == editing_entry.childNodes[0].textContent) {
+					if (exercise_entry.childNodes[0].textContent == editing_entry.childNodes[0].textContent) {
 						let new_entry: string[] = [];
-						new_entry[0] = (i+1).toString();
-						for(let k = 1; k < 5; k++) {
+						new_entry[0] = (i + 1).toString();
+						for (let k = 1; k < 5; k++) {
 							new_entry[k] = exercise_entry.childNodes[k].textContent;
 						}
 						new_split_workouts[i] = new_entry;
 					}
-				})
-			})
+				});
+			});
 			split_workouts[split_workout_name] = new_split_workouts;
 			SplitWorkouts.set(split_workouts);
 			load_entries();
 		} else {
 			editing = true;
-			rearrange_btn.textContent = 'Save';
+			reorder_btn.textContent = 'Save';
 
 			// Disable add and clear buttons when editing
 			add_btn.disabled = true;
@@ -257,15 +255,16 @@
 		<div class="none w-full gap-1 h-fit max-h-80" bind:this={editing_grid} />
 		<div class="grid w-full gap-1 h-fit max-h-80" bind:this={exercise_grid} />
 	</div>
-	<div class="grid grid-cols-3 text-white h-12 outline-none">
+	<div class="grid grid-cols-4 text-white h-12 outline-none">
 		<button
 			on:click={() => {
 				add_entry();
 			}}
 			bind:this={add_btn}>Add</button
 		>
+		<button>Delete</button>
+		<button on:click={toggle_edit_mode} bind:this={reorder_btn}>Reorder</button>
 		<button on:click={clear_all_entries} bind:this={clear_btn}>Clear</button>
-		<button on:click={toggle_edit_mode} bind:this={rearrange_btn}>Rearrange</button>
 	</div>
 </div>
 
