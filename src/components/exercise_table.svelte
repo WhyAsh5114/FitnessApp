@@ -2,6 +2,9 @@
 	import { onMount } from 'svelte';
 	import { to_number } from 'svelte/internal';
 
+	import { openModal } from 'svelte-modals'
+  	import Modal from './basic_modal.svelte'
+
 	import { SplitWorkouts } from '../routes/splits/new/newSplitStore';
 
 	export let table_type: string;
@@ -44,7 +47,7 @@
 			for (let i = 0; i < last_entry.childNodes.length; i++) {
 				last_entry_value.push(last_entry.childNodes[i].textContent);
 			}
-			last_entry_valid = check_entry(last_entry_value);
+			last_entry_valid = is_entry_valid(last_entry_value);
 		}
 
 		if (last_entry_valid) {
@@ -75,23 +78,41 @@
 		}
 	}
 
-	function check_entry(entry: string[]) {
+	function is_entry_valid(entry: string[]) {
+		let error: string = "";
+
 		// Make sure reps, sets and load is a number
 		for (let i = 2; i < 5; i++) {
 			try {
 				if (isNaN(to_number(entry[i])) || entry[i] === '') {
-					return false;
+					if(error === "") {
+						error += "Reps, Sets and Load should be a number"
+					}
 				}
 			} catch (error) {
-				return false;
+				if(error === "") {
+					error += "Reps, Sets and Load should be a number"
+				}
 			}
 		}
 
 		// Make sure exercise name is not empty
 		if (entry[1] === '') {
-			return false;
+			if(error === "") {
+				error += "Exercise name should not be empty"
+			} else {
+				console.log("correct")
+				error += ", exercise name should not be empty"
+			}
 		}
-		return true;
+		
+		if(error === "") {
+			return true;
+		} else {
+			console.log(error)
+			openModal(Modal, { title: "Error", message: error })
+			return false
+		}
 	}
 
 	function clear_all_entries() {
