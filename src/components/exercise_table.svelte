@@ -53,7 +53,13 @@
 			exercise_div.style.gridTemplateColumns = '1fr 4fr 1fr 1fr 1fr';
 			entry.forEach((stat, i) => {
 				let entry = document.createElement('p');
-				entry.className = 'text-center text-white bg-blue-600 min-w-max h-6 outline-none';
+				entry.className = 'bg-blue-600 text-center text-white min-w-max h-6 outline-none';
+				// Prevent enter key from adding new line (make the element single line)
+				entry.addEventListener('keydown', (e) => {
+					if(e.key === "Enter") {
+						e.preventDefault()
+					}
+				})
 				if (i === 0) {
 					entry.textContent = (exercise_grid.children.length + 1).toString();
 				} else {
