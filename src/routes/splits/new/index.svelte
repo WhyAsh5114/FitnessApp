@@ -2,6 +2,9 @@
 	import { SplitName, SplitSchedule, SplitWorkouts } from './newSplitStore';
 	import BasePage from '/src/components/base_page.svelte';
 
+	import { openModal } from 'svelte-modals';
+	import Modal from '/src/components/basic_modal.svelte';
+
 	let split_name: string = '';
 	let split_schedule: string[] = [];
 	let is_split_valid: boolean = false;
@@ -39,10 +42,10 @@
 			if (error === '') {
 				error += 'Enter at least 1 workout';
 			} else {
-				error += '\nEnter at least 1 workout';
+				error += ', enter at least 1 workout';
 			}
 		}
-		alert(error);
+		openModal(Modal, { title: 'Error', message: error });
 	}
 
 	// Called everytime a day input (mon, tue, wed.. input) is changed
