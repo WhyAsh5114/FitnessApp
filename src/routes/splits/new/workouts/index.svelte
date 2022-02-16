@@ -5,7 +5,6 @@
 	import { to_number } from 'svelte/internal';
 
 	import { SplitName, SplitSchedule, SplitWorkouts } from '../newSplitStore';
-	import BasePage from '/src/components/base_page.svelte';
 	import ExerciseTable from '/src/components/exercise_table.svelte';
 
 	let exercise_table: ExerciseTable;
@@ -96,48 +95,46 @@
 	}
 </script>
 
-<BasePage>
-	<div class="flex flex-col w-full h-full pt-2 bg-slate-700 2xl:w-1/2">
-		<h2 class="text-white text-2xl py-2 font-bold text-center">{split_name}</h2>
-		<div class="flex bg-slate-600 w-full justify-between">
-			<div class="w-1/6 bg-slate-800">
-				{#if unique_workouts.indexOf(current_workout) !== 0}
-					<button
-						class="text-white text-xl w-full bg-slate-800 h-full text-center"
-						on:click={previous_workout}>&lt;</button
-					>
-				{/if}
-			</div>
-			<p class="text-white text-xl py-1 font-semibold">{current_workout}</p>
-			<div class="w-1/6 bg-slate-800">
-				{#if unique_workouts.indexOf(current_workout) + 1 !== Object.keys(unique_workouts).length}
-					<button
-						class="text-white text-xl w-full bg-slate-800 h-full text-center"
-						on:click={next_workout}>&gt;</button
-					>
-				{/if}
-			</div>
-		</div>
-		{#key current_workout}
-			<ExerciseTable
-				table_type="split"
-				split_workout_name={current_workout}
-				bind:this={exercise_table}
-			/>
-		{/key}
-		<div class="text-white text-center h-14 bg-blue-500 text-lg">
-			{#if valid}
-				<div class="h-full grid place-items-center">
-					<a href="/splits/new/options" class="w-full font-semibold">Set split options</a>
-				</div>
-			{:else}
+<div class="flex flex-col w-full h-full pt-2 bg-slate-700 2xl:w-1/2">
+	<h2 class="text-white text-2xl py-2 font-bold text-center">{split_name}</h2>
+	<div class="flex bg-slate-600 w-full justify-between">
+		<div class="w-1/6 bg-slate-800">
+			{#if unique_workouts.indexOf(current_workout) !== 0}
 				<button
-					class="w-full h-full font-semibold"
-					on:click={() => {
-						validate_split(true);
-					}}>Set split options</button
+					class="text-white text-xl w-full bg-slate-800 h-full text-center"
+					on:click={previous_workout}>&lt;</button
+				>
+			{/if}
+		</div>
+		<p class="text-white text-xl py-1 font-semibold">{current_workout}</p>
+		<div class="w-1/6 bg-slate-800">
+			{#if unique_workouts.indexOf(current_workout) + 1 !== Object.keys(unique_workouts).length}
+				<button
+					class="text-white text-xl w-full bg-slate-800 h-full text-center"
+					on:click={next_workout}>&gt;</button
 				>
 			{/if}
 		</div>
 	</div>
-</BasePage>
+	{#key current_workout}
+		<ExerciseTable
+			table_type="split"
+			split_workout_name={current_workout}
+			bind:this={exercise_table}
+		/>
+	{/key}
+	<div class="text-white text-center h-14 bg-blue-500 text-lg">
+		{#if valid}
+			<div class="h-full grid place-items-center">
+				<a href="/splits/new/options" class="w-full font-semibold">Set split options</a>
+			</div>
+		{:else}
+			<button
+				class="w-full h-full font-semibold"
+				on:click={() => {
+					validate_split(true);
+				}}>Set split options</button
+			>
+		{/if}
+	</div>
+</div>

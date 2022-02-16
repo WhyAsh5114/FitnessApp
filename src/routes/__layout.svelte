@@ -1,8 +1,11 @@
 <script>
     import '../tailwind.css'
     import { Modals, closeModal } from 'svelte-modals'
+    import Title from '/src/components/title.svelte';
+    import Footer from '/src/components/footer.svelte';
 </script>
 
+<!-- Modal -->
 <Modals>
     <div
         slot="backdrop"
@@ -10,9 +13,12 @@
         on:click={closeModal}
     />
 </Modals>
-  
-<div class="">
+
+<!-- Base Layout -->
+<div class="bg-slate-800 grid min-h-screen w-full place-items-center menu-container">
+    <Title />
     <slot></slot>
+    <Footer />
 </div>
 
 <style>
@@ -23,5 +29,10 @@
         right: 0;
         left: 0;
         background: rgba(0,0,0,0.50)
+    }
+
+    .menu-container
+    {
+        grid-template-rows: 1fr 4fr 1fr;
     }
 </style>

@@ -1,6 +1,5 @@
 <script lang="ts">
 	import { SplitName, SplitSchedule, SplitWorkouts } from './newSplitStore';
-	import BasePage from '/src/components/base_page.svelte';
 
 	import { openModal } from 'svelte-modals';
 	import Modal from '/src/components/basic_modal.svelte';
@@ -79,51 +78,49 @@
 	}
 </script>
 
-<BasePage>
-	<div class="grid w-5/6 md:w-4/6 lg:w-3/6 xl:w-2/6 gap-3 px-5 h-full new-split place-items-center">
-		<h2 class="text-2xl text-white font-bold text-center">Create New Split</h2>
-		<div class="grid grid-cols-2 rounded-md">
-			<h3 class="text-xl text-white text-center font-semibold">Name</h3>
-			<input
-				on:change={check_split_validity}
-				bind:value={split_name}
-				type="text"
-				class="text-center outline-none rounded-sm font-semibold shadow-black shadow-sm mr-5"
-			/>
-		</div>
-		<div class="grid gap-2">
-			{#each days as day, i}
-				<div class="grid grid-cols-2 shadow-black bg-pink-700 rounded-full p-2 w-full">
-					<p class="text-white text-center text-lg font-medium">
-						{day}
-					</p>
-					<input
-						bind:value={split_schedule[i]}
-						on:change={update_unique_workouts}
-						type="text"
-						placeholder="Rest"
-						class="text-center mr-5 outline-none p-0.5 rounded-sm font-medium shadow-black shadow-sm"
-					/>
-				</div>
-			{/each}
-		</div>
-		<div class="py-1 border-pink-600 border-2 rounded-full px-4">
-			{#if is_split_valid}
-				<a
-					href="/splits/new/workouts"
-					on:click={save_split}
-					class="text-white font-semibold text-lg outline-none"
-				>
-					Create {unique_workouts.length} workouts
-				</a>
-			{:else}
-				<button class="text-white font-semibold text-lg outline-none" on:click={show_error}>
-					Create {unique_workouts.length} workouts
-				</button>
-			{/if}
-		</div>
+<div class="grid w-5/6 md:w-4/6 lg:w-3/6 xl:w-2/6 gap-3 px-5 h-full new-split place-items-center">
+	<h2 class="text-2xl text-white font-bold text-center">Create New Split</h2>
+	<div class="grid grid-cols-2 rounded-md">
+		<h3 class="text-xl text-white text-center font-semibold">Name</h3>
+		<input
+			on:change={check_split_validity}
+			bind:value={split_name}
+			type="text"
+			class="text-center outline-none rounded-sm font-semibold shadow-black shadow-sm mr-5"
+		/>
 	</div>
-</BasePage>
+	<div class="grid gap-2">
+		{#each days as day, i}
+			<div class="grid grid-cols-2 shadow-black bg-pink-700 rounded-full p-2 w-full">
+				<p class="text-white text-center text-lg font-medium">
+					{day}
+				</p>
+				<input
+					bind:value={split_schedule[i]}
+					on:change={update_unique_workouts}
+					type="text"
+					placeholder="Rest"
+					class="text-center mr-5 outline-none p-0.5 rounded-sm font-medium shadow-black shadow-sm"
+				/>
+			</div>
+		{/each}
+	</div>
+	<div class="py-1 border-pink-600 border-2 rounded-full px-4">
+		{#if is_split_valid}
+			<a
+				href="/splits/new/workouts"
+				on:click={save_split}
+				class="text-white font-semibold text-lg outline-none"
+			>
+				Create {unique_workouts.length} workouts
+			</a>
+		{:else}
+			<button class="text-white font-semibold text-lg outline-none" on:click={show_error}>
+				Create {unique_workouts.length} workouts
+			</button>
+		{/if}
+	</div>
+</div>
 
 <style>
 	.new-split {
