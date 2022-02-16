@@ -1,7 +1,15 @@
 <script type="typescript">
+	import { openModal } from 'svelte-modals';
+	import Modal from '/src/components/basic_modal.svelte';
+
+	import { to_number } from 'svelte/internal';
+
 	import { SplitName, SplitSchedule, SplitWorkouts } from '../newSplitStore';
 	import BasePage from '/src/components/base_page.svelte';
 	import ExerciseTable from '/src/components/exercise_table.svelte';
+
+	let exercise_table: ExerciseTable;
+	let valid: boolean;
 
 	let split_schedule: string[];
 	let unique_workouts: string[];
@@ -32,17 +40,59 @@
 	let split_workouts: object;
 	SplitWorkouts.subscribe((value: object) => {
 		split_workouts = value;
+		validate_split(false);
 	});
 
 	let current_workout: string = unique_workouts[0];
-	let valid: boolean = false;
+
+	function validate_split(show_modal: boolean) {
+		let error: string = 'Invalid workouts, ';
+		for (let [workout, exercises] of Object.entries(split_workouts)) {
+			if (exercises.length === 0) {
+				let msg: string = `add at least one exercise to ${workout}, `;
+				if (!error.includes(msg)) {
+					error += msg;
+				}
+			}
+			exercises.forEach((exercise: string[]) => {
+				if (exercise[1] === '') {
+					let msg: string = `exercise names should not be empty (in ${workout}), `;
+					if (!error.includes(msg)) {
+						error += msg;
+					}
+				}
+				for (let i = 2; i < 5; i++) {
+					if (isNaN(to_number(exercise[i])) || exercise[i] === '') {
+						let msg: string = `reps, sets, load should be a number (in ${workout}), `;
+						if (!error.includes(msg)) {
+							error += msg;
+						}
+					}
+				}
+			});
+		}
+
+		if (error === 'Invalid workouts, ') {
+			valid = true;
+		} else {
+			valid = false;
+			if (show_modal) {
+				error = error.slice(0, error.length - 2);
+				openModal(Modal, { title: 'Error', message: error });
+			}
+		}
+	}
 
 	function next_workout() {
-		current_workout = unique_workouts[unique_workouts.indexOf(current_workout) + 1];
+		if (exercise_table.validate_table()) {
+			current_workout = unique_workouts[unique_workouts.indexOf(current_workout) + 1];
+		}
 	}
 
 	function previous_workout() {
-		current_workout = unique_workouts[unique_workouts.indexOf(current_workout) - 1];
+		if (exercise_table.validate_table()) {
+			current_workout = unique_workouts[unique_workouts.indexOf(current_workout) - 1];
+		}
 	}
 </script>
 
@@ -72,13 +122,21 @@
 			<ExerciseTable
 				table_type="split"
 				split_workout_name={current_workout}
+				bind:this={exercise_table}
 			/>
 		{/key}
-		<div class="text-white text-center h-14 bg-blue-500">
+		<div class="text-white text-center h-14 bg-blue-500 text-lg">
 			{#if valid}
-				<a href="/" class="w-full">Set split options</a>
+				<div class="h-full grid place-items-center">
+					<a href="/splits/new/options" class="w-full font-semibold">Set split options</a>
+				</div>
 			{:else}
-				<button class="w-full h-full font-semibold text-lg">Set split options</button>
+				<button
+					class="w-full h-full font-semibold"
+					on:click={() => {
+						validate_split(true);
+					}}>Set split options</button
+				>
 			{/if}
 		</div>
 	</div>
