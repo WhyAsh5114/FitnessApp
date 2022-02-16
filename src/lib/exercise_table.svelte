@@ -154,7 +154,6 @@
 			SplitWorkouts.set(split_workouts);
 			load_entries();
 		} else {
-			console.log("here")
 			editing = true;
 			reorder_btn.textContent = 'Save';
 
@@ -169,8 +168,6 @@
 
 			editing_grid.textContent = '';
 			if (split_workouts[split_workout_name] !== undefined) {
-				console.log("here2")
-				console.log(split_workouts[split_workout_name])
 				split_workouts[split_workout_name].forEach((exercise: string[], i: any) => {
 					let exercise_div: HTMLDivElement = document.createElement('div');
 					exercise_div.className = 'grid grid-cols-5 gap-1 text-white';
