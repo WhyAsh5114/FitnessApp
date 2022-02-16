@@ -76,6 +76,7 @@
 			});
 			exercise_grid.appendChild(exercise_div);
 		}
+		update_store();
 	}
 
 	function is_entry_valid(entry: string[]) {
@@ -167,7 +168,7 @@
 
 			editing_grid.textContent = '';
 			if (split_workouts[split_workout_name] !== undefined) {
-				split_workouts[split_workout_name].forEach((exercise, i) => {
+				split_workouts[split_workout_name].forEach((exercise: string[], i: any) => {
 					let exercise_div: HTMLDivElement = document.createElement('div');
 					exercise_div.className = 'grid grid-cols-5 gap-1 text-white';
 					exercise_div.style.gridTemplateColumns = '1fr 4fr 1fr 1fr 1fr';
@@ -215,8 +216,6 @@
 						);
 					};
 					exercise_div.appendChild(down_btn);
-
-					editing_grid.appendChild(exercise_div);
 				});
 			}
 		}
@@ -237,6 +236,39 @@
 			SplitWorkouts.set(split_workouts);
 		}
 	}
+
+	export function validate_table() {
+		let error: string = '';
+
+		if (exercise_grid.childNodes.length === 0) {
+			error = 'Add at least one exercise';
+		} else {
+			[].forEach.call(exercise_grid.childNodes, (exercise: ChildNode) => {
+				for (let i = 2; i < 5; i++) {
+					if (
+						isNaN(to_number(exercise.childNodes[i].textContent)) ||
+						exercise.childNodes[i].textContent === ''
+					) {
+						error = 'Reps, Sets and Load should be a number';
+					}
+				}
+				if (exercise.childNodes[1].textContent === '') {
+					if (error === '') {
+						error = 'Exercise names should not be empty';
+					} else {
+						error += ', exercise names should not be empty';
+					}
+				}
+			});
+		}
+
+		if (error === '') {
+			return true;
+		} else {
+			openModal(Modal, { title: 'Error', message: error });
+			return false;
+		}
+	}
 </script>
 
 <div class="h-full flex flex-col">
@@ -255,14 +287,13 @@
 		<div class="none w-full gap-1 h-fit max-h-80" bind:this={editing_grid} />
 		<div class="grid w-full gap-1 h-fit max-h-80" bind:this={exercise_grid} />
 	</div>
-	<div class="grid grid-cols-4 text-white h-12 outline-none">
+	<div class="grid grid-cols-3 text-white h-12 outline-none">
 		<button
 			on:click={() => {
 				add_entry();
 			}}
 			bind:this={add_btn}>Add</button
 		>
-		<button>Delete</button>
 		<button on:click={toggle_edit_mode} bind:this={reorder_btn}>Reorder</button>
 		<button on:click={clear_all_entries} bind:this={clear_btn}>Clear</button>
 	</div>
