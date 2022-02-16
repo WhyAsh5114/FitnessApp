@@ -10,9 +10,9 @@ hover:brightness-90 hover:shadow-black hover:shadow-xl">
         <dt class="text-white font-semibold text-xl md:text-2xl lg:text-3xl xl:text-4xl text-left w-full pr-2">
             {title}
         </dt>
-        <dl class="text-white text-md md:text-lg lg:text-xl xl:text-2xl w-full text-left pr-2">
+        <dd class="text-white text-md md:text-lg lg:text-xl xl:text-2xl w-full text-left pr-2">
             {content}
-        </dl>
+        </dd>
     </div>
 </a>
 
