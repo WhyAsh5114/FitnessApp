@@ -1,6 +1,6 @@
 <script type="typescript">
-    import MenuButton from "/src/components/menu_button.svelte";
-    import MenuButtonGrid from "/src/components/menu_button_grid.svelte";
+    import MenuButton from "$lib/menu_button.svelte";
+    import MenuButtonGrid from "$lib/menu_button_grid.svelte";
 </script>
 
 <MenuButtonGrid>

@@ -2,7 +2,7 @@
 	import { SplitName, SplitSchedule, SplitWorkouts } from './newSplitStore';
 
 	import { openModal } from 'svelte-modals';
-	import Modal from '/src/components/basic_modal.svelte';
+	import Modal from '$lib/basic_modal.svelte';
 
 	let split_name: string = '';
 	let split_schedule: string[] = [];

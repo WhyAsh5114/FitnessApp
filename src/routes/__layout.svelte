@@ -1,8 +1,8 @@
 <script>
     import '../tailwind.css'
     import { Modals, closeModal } from 'svelte-modals'
-    import Title from '/src/components/title.svelte';
-    import Footer from '/src/components/footer.svelte';
+    import Title from '$lib/title.svelte';
+    import Footer from '$lib/footer.svelte';
 </script>
 
 <!-- Modal -->
