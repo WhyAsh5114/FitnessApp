@@ -32,19 +32,15 @@
 	}
 
 	function show_error() {
-		let error: string = '';
+		let errors = [];
 
 		if (split_name === '') {
-			error += 'Enter split name';
+			errors.push('Enter split name');
 		}
 		if (unique_workouts.length === 0) {
-			if (error === '') {
-				error += 'Enter at least 1 workout';
-			} else {
-				error += ', enter at least 1 workout';
-			}
+			errors.push('Enter at least 1 workout');
 		}
-		openModal(Modal, { title: 'Error', message: error });
+		openModal(Modal, { title: 'Error', messages: errors });
 	}
 
 	// Called everytime a day input (mon, tue, wed.. input) is changed

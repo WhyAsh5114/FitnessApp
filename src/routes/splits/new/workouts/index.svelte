@@ -5,9 +5,9 @@
 	import { to_number } from 'svelte/internal';
 
 	import { SplitName, SplitSchedule, SplitWorkouts } from '../newSplitStore';
-	import ExerciseTable from '$lib/exercise_table.svelte';
+	import SplitTable from '$lib/split_table.svelte'
 
-	let exercise_table: ExerciseTable;
+	let exercise_table;
 	let valid: boolean;
 
 	let split_schedule: string[];
@@ -45,39 +45,19 @@
 	let current_workout: string = unique_workouts[0];
 
 	function validate_split(show_modal: boolean) {
-		let error: string = 'Invalid workouts, ';
+		let errors = [];
 		for (let [workout, exercises] of Object.entries(split_workouts)) {
 			if (exercises.length === 0) {
-				let msg: string = `add at least one exercise to ${workout}, `;
-				if (!error.includes(msg)) {
-					error += msg;
-				}
+				errors.push(`Add at least one exercise to ${workout}`);
 			}
-			exercises.forEach((exercise: string[]) => {
-				if (exercise[1] === '') {
-					let msg: string = `exercise names should not be empty (in ${workout}), `;
-					if (!error.includes(msg)) {
-						error += msg;
-					}
-				}
-				for (let i = 2; i < 5; i++) {
-					if (isNaN(to_number(exercise[i])) || exercise[i] === '') {
-						let msg: string = `reps, sets, load should be a number (in ${workout}), `;
-						if (!error.includes(msg)) {
-							error += msg;
-						}
-					}
-				}
-			});
 		}
 
-		if (error === 'Invalid workouts, ') {
+		if (errors.length === 0) {
 			valid = true;
 		} else {
 			valid = false;
 			if (show_modal) {
-				error = error.slice(0, error.length - 2);
-				openModal(Modal, { title: 'Error', message: error });
+				openModal(Modal, { title: 'Error', messages: errors });
 			}
 		}
 	}
@@ -117,7 +97,7 @@
 		</div>
 	</div>
 	{#key current_workout}
-		<ExerciseTable
+		<SplitTable
 			table_type="split"
 			split_workout_name={current_workout}
 			bind:this={exercise_table}

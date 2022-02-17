@@ -1,18 +1,28 @@
-<script>
+<script lang="ts">
+	import { onMount } from 'svelte';
+
 	import { closeModal } from 'svelte-modals';
 
-	// provided by <Modals />
-	export let isOpen;
+	export let isOpen: boolean;
+	export let title: string;
+	export let messages = [];
 
-	export let title;
-	export let message;
+	let textarea: HTMLUListElement;
+
+	onMount(() => {
+		messages.forEach((message) => {
+			let message_element = document.createElement('li');
+			message_element.textContent = message;
+			textarea.appendChild(message_element);
+		});
+	});
 </script>
 
 {#if isOpen}
 	<div role="dialog" class="modal">
 		<div class="contents">
 			<h2>{title}</h2>
-			<p>{message}</p>
+			<ul bind:this={textarea} />
 			<div class="actions">
 				<button class="ok-btn" on:click={closeModal}>OK</button>
 			</div>
@@ -54,7 +64,7 @@
 		@apply font-semibold text-red-500;
 	}
 
-	p {
+	ul {
 		text-align: center;
 		margin-top: 16px;
 		color: white;
