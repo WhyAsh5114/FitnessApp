@@ -1,8 +1,7 @@
 <script type="typescript">
 	import { openModal } from 'svelte-modals';
 	import Modal from '$lib/basic_modal.svelte';
-
-	import { to_number } from 'svelte/internal';
+	import { slide } from 'svelte/transition';
 
 	import { SplitName, SplitSchedule, SplitWorkouts } from '../newSplitStore';
 	import SplitTable from '$lib/split_table.svelte'
@@ -45,6 +44,8 @@
 	let current_workout: string = unique_workouts[0];
 
 	function validate_split(show_modal: boolean) {
+		// TODO FIX THE IDs OF THE EXERCISES BEFORE MOVING ON, THEY CHANGE AFTER DELETING, PLEASE
+		// ! SEE THIS !~~~
 		let errors = [];
 		for (let [workout, exercises] of Object.entries(split_workouts)) {
 			if (exercises.length === 0) {
@@ -63,20 +64,16 @@
 	}
 
 	function next_workout() {
-		if (exercise_table.validate_table()) {
-			current_workout = unique_workouts[unique_workouts.indexOf(current_workout) + 1];
-		}
+		current_workout = unique_workouts[unique_workouts.indexOf(current_workout) + 1];
 	}
 
 	function previous_workout() {
-		if (exercise_table.validate_table()) {
-			current_workout = unique_workouts[unique_workouts.indexOf(current_workout) - 1];
-		}
+		current_workout = unique_workouts[unique_workouts.indexOf(current_workout) - 1];
 	}
 </script>
 
-<div class="flex flex-col w-full h-full pt-2 bg-slate-700 2xl:w-1/2">
-	<h2 class="text-white text-2xl py-2 font-bold text-center">{split_name}</h2>
+<div class="flex flex-col w-full h-full pt-2 bg-slate-900 2xl:w-1/2">
+	<h2 class="text-white text-2xl py-2 font-bold text-center bg-slate-700">{split_name}</h2>
 	<div class="flex bg-slate-600 w-full justify-between">
 		<div class="w-1/6 bg-slate-800">
 			{#if unique_workouts.indexOf(current_workout) !== 0}
@@ -97,13 +94,14 @@
 		</div>
 	</div>
 	{#key current_workout}
-		<SplitTable
-			table_type="split"
-			split_workout_name={current_workout}
-			bind:this={exercise_table}
-		/>
+		<div class="h-full">
+			<SplitTable
+				split_workout_name={current_workout}
+				bind:this={exercise_table}
+			/>
+		</div>
 	{/key}
-	<div class="text-white text-center h-14 bg-blue-500 text-lg">
+	<div class="text-white text-center py-2 bg-blue-500 text-lg">
 		{#if valid}
 			<div class="h-full grid place-items-center">
 				<a href="/splits/new/options" class="w-full font-semibold">Set split options</a>
