@@ -8,11 +8,10 @@
 	import Modal from './basic_modal.svelte';
 
 	let exercise_grid: HTMLDivElement;
-	let rearranging_grid: HTMLDivElement;
 
 	// Toggle variables for displaying appropriate element
 	let adding: boolean;
-	let rearranging: boolean;
+	let reordering: boolean;
 	let deleting: boolean;
 
 	// Add exercise inputs
@@ -20,6 +19,8 @@
 	let reps: string;
 	let sets: string;
 	let load: string;
+
+	let dynamic_elements: HTMLDivElement[] = [];
 
 	export let split_workout_name: string = null;
 
@@ -43,6 +44,16 @@
 		return true;
 	}
 
+	function array_move(arr, old_index, new_index) {
+		if (new_index >= arr.length) {
+			var k = new_index - arr.length + 1;
+			while (k--) {
+				arr.push(undefined);
+			}
+		}
+		arr.splice(new_index, 0, arr.splice(old_index, 1)[0]);
+	};
+
 	function entry_is_valid() {
 		let errors = [];
 
@@ -60,8 +71,6 @@
 		}
 	}
 
-	function enter_rearrange_mode() {}
-
 	function clear_all_entries() {}
 
 	function remove_entry(num: number) {
@@ -74,14 +83,53 @@
 		split_workouts[split_workout_name] = split_workouts[split_workout_name];
 	}
 
+	function enter_reordering_mode() {
+		[].forEach.call(exercise_grid.children, (entry: HTMLDivElement, i:number) => {
+			entry.draggable = true;
+			entry.addEventListener('dragstart', (e) => {
+				console.log('drag started', e.clientY)
+			})
+			entry.addEventListener('drag', (e) => {
+				console.log('dragging', e.clientY)
+				let height_differences: number[] = [];
+				Array.prototype.forEach.call(exercise_grid.children, (other_entry: HTMLDivElement) => {
+					let bounding_rect = other_entry.getBoundingClientRect();
+					let y_center = bounding_rect.y + bounding_rect.height/2;
+					height_differences.push(y_center - e.clientY)
+					console.log(y_center - e.clientY)
+				})
+				let closest_element_index = 0;
+				height_differences.forEach((difference, i) => {
+					if(Math.abs(height_differences[closest_element_index]) > Math.abs(difference)) {
+						closest_element_index = i
+					}
+				})
+				let closest_element_difference = height_differences[closest_element_index]
+				let closest_element = exercise_grid.children[closest_element_index]
+				console.log(closest_element.textContent, closest_element_difference, closest_element_index)
+				if(closest_element_index !== i) {
+					console.log(split_workouts[split_workout_name])
+					array_move(split_workouts[split_workout_name], i, closest_element_index)
+					console.log(split_workouts[split_workout_name])
+				}
+			})
+			entry.addEventListener('dragend', (e) => {
+				console.log('drag ended', e.clientY)
+			})
+			entry.addEventListener('touchstart', () => {
+				console.log('touch started', i, entry.textContent)
+			})
+		})
+	}
+
 	function save_action() {
 		if (adding) {
 			if (entry_is_valid()) {
 				adding = false;
 				let last_exercise_index = split_workouts[split_workout_name].length;
 				let id = 1;
-				if(last_exercise_index !== 0) {
-					id = split_workouts[split_workout_name][last_exercise_index - 1].id + 1
+				if (last_exercise_index !== 0) {
+					id = split_workouts[split_workout_name][last_exercise_index - 1].id + 1;
 				}
 				split_workouts[split_workout_name].push({
 					id: id,
@@ -92,8 +140,8 @@
 				});
 				SplitWorkouts.set(split_workouts);
 			}
-		} else if (rearranging) {
-			rearranging = false;
+		} else if (reordering) {
+			reordering = false;
 			// Modify store
 		} else if (deleting) {
 			deleting = false;
@@ -104,8 +152,8 @@
 	function cancel_action() {
 		if (adding) {
 			adding = false;
-		} else if (rearranging) {
-			rearranging = false;
+		} else if (reordering) {
+			reordering = false;
 		} else if (deleting) {
 			deleting = false;
 			split_workouts[split_workout_name] = JSON.parse(
@@ -126,8 +174,10 @@
 
 	<!-- Exercise table -->
 	<div class="h-full bg-slate-900 w-full overflow-y-auto container-snap transition-all">
-		<div class="none w-full gap-1 h-fit max-h-80" bind:this={rearranging_grid} />
-		<div class="grid w-full gap-1 h-fit max-h-0" bind:this={exercise_grid}>
+		<div
+			class="grid w-full gap-1 h-fit max-h-0"
+			bind:this={exercise_grid}
+		>
 			{#each split_workouts[split_workout_name] as exercise, i (exercise.id)}
 				<div
 					class="grid grid-cols-5 gap-1"
@@ -136,16 +186,28 @@
 					out:fade|local
 					animate:flip
 				>
-					{#if deleting}
-						<button
-							class="text-white bg-red-700 font-semibold"
-							on:click={function () {
-								remove_entry(exercise.id);
-							}}>X</button
-						>
-					{:else}
-						<p class="text-white bg-blue-600 text-center">{i + 1}</p>
-					{/if}
+					<div bind:this={dynamic_elements[i]}>
+						{#if deleting}
+							<button
+								in:fade|local={{ duration: 250 }}
+								class="text-white bg-red-700 font-semibold w-full"
+								on:click={function () {
+									remove_entry(exercise.id);
+								}}>X</button
+							>
+						{:else if reordering}
+							<p
+								class="text-white bg-blue-600 text-center"
+								in:fade|local={{ duration: 250 }}
+							>
+								≡
+							</p>
+						{:else}
+							<p class="text-white bg-blue-600 text-center" in:fade|local={{ duration: 250 }}>
+								{i + 1}
+							</p>
+						{/if}
+					</div>
 					<p class="text-white bg-blue-600 text-center overflow-x-scroll container-snap">
 						{exercise.name}
 					</p>
@@ -184,7 +246,7 @@
 			</div>
 		</div>
 	{/if}
-	{#if adding || rearranging || deleting}
+	{#if adding || reordering || deleting}
 		<div
 			class="grid grid-cols-2 text-white bg-clip-padding font-medium"
 			in:fade|local={{ duration: 250 }}
@@ -194,7 +256,7 @@
 		</div>
 	{:else}
 		<div
-			class="grid grid-cols-3 text-white py-2 bg-clip-padding bg-slate-700"
+			class="grid grid-cols-4 text-white py-2 bg-clip-padding bg-slate-700"
 			in:fade|local={{ duration: 250 }}
 		>
 			<button
@@ -204,8 +266,14 @@
 			>
 			<button
 				on:click={() => {
-					rearranging = true;
+					reordering = true;
+					enter_reordering_mode();
 				}}>Reorder</button
+			>
+			<button
+				on:click={() => {
+					split_workouts[split_workout_name] = split_workouts_temp[split_workout_name]
+				}}>Edit</button
 			>
 			<button
 				on:click={() => {
