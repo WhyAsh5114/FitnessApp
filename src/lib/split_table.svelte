@@ -2,7 +2,6 @@
 	import { openModal } from 'svelte-modals';
 	import { to_number } from 'svelte/internal';
 	import { fade, fly, slide, blur } from 'svelte/transition';
-	import { linear } from 'svelte/easing';
 	import { flip } from 'svelte/animate';
 	import { SplitWorkouts } from '../routes/splits/new/newSplitStore';
 	import Modal from './basic_modal.svelte';
@@ -10,18 +9,20 @@
 	let exercise_grid: HTMLDivElement;
 
 	// Toggle variables for displaying appropriate element
-	let adding: boolean;
-	let reordering: boolean;
-	let deleting: boolean;
+	let adding = false;
+	let reordering = false;
+	let editing = false;
+	let deleting = false;
 
 	// Add exercise inputs
-	let name: string;
-	let reps: string;
-	let sets: string;
-	let load: string;
+	let name = '';
+	let reps = '';
+	let sets = '';
+	let load = '';
 
-	let dynamic_elements: HTMLDivElement[] = [];
+	let selected_entry_index = null;
 
+	// Component prop
 	export let split_workout_name: string = null;
 
 	// split_workouts_temp is a temp variable in case the user
@@ -52,7 +53,23 @@
 			}
 		}
 		arr.splice(new_index, 0, arr.splice(old_index, 1)[0]);
-	};
+	}
+
+	function debounce(func, wait, immediate) {
+		var timeout;
+		return function () {
+			var context = this,
+				args = arguments;
+			var later = function () {
+				timeout = null;
+				if (!immediate) func.apply(context, args);
+			};
+			var callNow = immediate && !timeout;
+			clearTimeout(timeout);
+			timeout = setTimeout(later, wait);
+			if (callNow) func.apply(context, args);
+		};
+	}
 
 	function entry_is_valid() {
 		let errors = [];
@@ -71,7 +88,38 @@
 		}
 	}
 
-	function clear_all_entries() {}
+	function enter_editing_mode() {
+		[].forEach.call(exercise_grid.children, (entry: HTMLDivElement, i: number) => {
+			entry.addEventListener('click', select_entry_for_editing);
+		});
+	}
+
+	function deselect_entries() {
+		// Reset entry colors to default
+		let selected_entry_stats = document.querySelectorAll('.bg-teal-600');
+		selected_entry_stats.forEach((stat) => {
+			stat.classList.add('bg-blue-600');
+			stat.classList.remove('bg-teal-600');
+		});
+		selected_entry_index = null;
+	}
+
+	function select_entry_for_editing(event: Event) {
+		deselect_entries();
+		let entry: HTMLDivElement = this;
+
+		// Set newly selected entry's colors
+		[].forEach.call(entry.children, (child: HTMLElement) => {
+			child.classList.remove('bg-blue-600');
+			child.classList.add('bg-teal-600');
+		});
+		selected_entry_index = [].indexOf.call(exercise_grid.children, entry);
+		console.log(selected_entry_index);
+		name = entry.children[1].textContent;
+		reps = entry.children[2].textContent;
+		sets = entry.children[3].textContent;
+		load = entry.children[4].textContent;
+	}
 
 	function remove_entry(num: number) {
 		split_workouts[split_workout_name].forEach((exercise, i) => {
@@ -83,66 +131,97 @@
 		split_workouts[split_workout_name] = split_workouts[split_workout_name];
 	}
 
+	// Event listener function references, so that they can be removed later
+	const handleNormalDrag = debounce(handle_normal_drag, 300, false);
+	const handleTouchDrag = debounce(handle_touch_drag, 300, false);
+
 	function enter_reordering_mode() {
-		[].forEach.call(exercise_grid.children, (entry: HTMLDivElement, i:number) => {
+		[].forEach.call(exercise_grid.children, (entry: HTMLDivElement, i: number) => {
 			entry.draggable = true;
-			entry.addEventListener('dragstart', (e) => {
-				console.log('drag started', e.clientY)
-			})
-			entry.addEventListener('drag', (e) => {
-				console.log('dragging', e.clientY)
-				let height_differences: number[] = [];
-				Array.prototype.forEach.call(exercise_grid.children, (other_entry: HTMLDivElement) => {
-					let bounding_rect = other_entry.getBoundingClientRect();
-					let y_center = bounding_rect.y + bounding_rect.height/2;
-					height_differences.push(y_center - e.clientY)
-					console.log(y_center - e.clientY)
-				})
-				let closest_element_index = 0;
-				height_differences.forEach((difference, i) => {
-					if(Math.abs(height_differences[closest_element_index]) > Math.abs(difference)) {
-						closest_element_index = i
-					}
-				})
-				let closest_element_difference = height_differences[closest_element_index]
-				let closest_element = exercise_grid.children[closest_element_index]
-				console.log(closest_element.textContent, closest_element_difference, closest_element_index)
-				if(closest_element_index !== i) {
-					console.log(split_workouts[split_workout_name])
-					array_move(split_workouts[split_workout_name], i, closest_element_index)
-					console.log(split_workouts[split_workout_name])
-				}
-			})
-			entry.addEventListener('dragend', (e) => {
-				console.log('drag ended', e.clientY)
-			})
-			entry.addEventListener('touchstart', () => {
-				console.log('touch started', i, entry.textContent)
-			})
-		})
+
+			// To avoid scrolling down when rearranging with touch
+			[].forEach.call(entry.children, (child: HTMLElement) => {
+				child.style.touchAction = 'none';
+			});
+
+			entry.addEventListener('drag', handleNormalDrag);
+			entry.addEventListener('touchmove', handleTouchDrag);
+		});
+	}
+
+	function exit_reordering_mode() {
+		// Reverse enter_reordering_mode
+		[].forEach.call(exercise_grid.children, (entry: HTMLDivElement, i: number) => {
+			entry.draggable = false;
+			[].forEach.call(entry.children, (child: HTMLElement) => {
+				child.style.touchAction = 'auto';
+			});
+			entry.removeEventListener('drag', handleNormalDrag);
+			entry.removeEventListener('touchmove', handleTouchDrag);
+		});
+	}
+
+	// Parsing functions for different events of touch and drag
+	function handle_normal_drag(event: DragEvent) {
+		handle_drag(event.clientY, this);
+	}
+	function handle_touch_drag(event: TouchEvent) {
+		handle_drag(event.targetTouches[0].clientY, this);
+	}
+
+	// Main drag function
+	function handle_drag(clientY: number, element: HTMLElement) {
+		let exercise_div_index = [].indexOf.call(exercise_grid.children, element);
+
+		// Make an array of all the elements' center y position
+		let elements_y_center: number[] = [];
+		[].forEach.call(exercise_grid.children, (other_entry: HTMLDivElement) => {
+			let bounding_rect = other_entry.getBoundingClientRect();
+			let y_center = Math.round(bounding_rect.y + bounding_rect.height / 2);
+			elements_y_center.push(y_center);
+		});
+		// So that the user can drag further than the last element's end
+		// and still be able to put the element in the last position
+		// the if condition in the next loop needs this so that the array_move
+		// is performed even if clientY is beyond last element's y center
+		elements_y_center[elements_y_center.length - 1] = Infinity;
+
+		for (let i = 0; i < elements_y_center.length; i++) {
+			if (clientY < elements_y_center[i] && clientY !== 0) {
+				array_move(split_workouts[split_workout_name], exercise_div_index, i);
+				split_workouts[split_workout_name] = split_workouts[split_workout_name];
+				break;
+			}
+		}
 	}
 
 	function save_action() {
-		if (adding) {
-			if (entry_is_valid()) {
-				adding = false;
-				let last_exercise_index = split_workouts[split_workout_name].length;
-				let id = 1;
-				if (last_exercise_index !== 0) {
-					id = split_workouts[split_workout_name][last_exercise_index - 1].id + 1;
-				}
-				split_workouts[split_workout_name].push({
-					id: id,
-					name: name,
-					reps: reps,
-					sets: sets,
-					load: load
-				});
-				SplitWorkouts.set(split_workouts);
-			}
+		if (adding && entry_is_valid) {
+			adding = false;
+			let id = split_workouts[split_workout_name].length + 1;
+			split_workouts[split_workout_name].push({
+				id: id,
+				name: name,
+				reps: reps,
+				sets: sets,
+				load: load
+			});
+			SplitWorkouts.set(split_workouts);
 		} else if (reordering) {
 			reordering = false;
-			// Modify store
+			exit_reordering_mode();
+			SplitWorkouts.set(split_workouts);
+		} else if (editing && entry_is_valid()) {
+			editing = false;
+			console.log(selected_entry_index);
+			let entry = split_workouts[split_workout_name][selected_entry_index];
+			entry.name = name;
+			entry.reps = reps;
+			entry.sets = sets;
+			entry.load = load;
+			split_workouts[split_workout_name][selected_entry_index] = entry;
+			deselect_entries();
+			SplitWorkouts.set(split_workouts);
 		} else if (deleting) {
 			deleting = false;
 			SplitWorkouts.set(split_workouts);
@@ -154,6 +233,13 @@
 			adding = false;
 		} else if (reordering) {
 			reordering = false;
+			split_workouts[split_workout_name] = JSON.parse(
+				JSON.stringify(split_workouts_temp[split_workout_name])
+			);
+			exit_reordering_mode();
+		} else if (editing) {
+			editing = false;
+			deselect_entries();
 		} else if (deleting) {
 			deleting = false;
 			split_workouts[split_workout_name] = JSON.parse(
@@ -174,10 +260,7 @@
 
 	<!-- Exercise table -->
 	<div class="h-full bg-slate-900 w-full overflow-y-auto container-snap transition-all">
-		<div
-			class="grid w-full gap-1 h-fit max-h-0"
-			bind:this={exercise_grid}
-		>
+		<div class="grid w-full gap-1 h-fit max-h-0" bind:this={exercise_grid}>
 			{#each split_workouts[split_workout_name] as exercise, i (exercise.id)}
 				<div
 					class="grid grid-cols-5 gap-1"
@@ -186,7 +269,7 @@
 					out:fade|local
 					animate:flip
 				>
-					<div bind:this={dynamic_elements[i]}>
+					<div class="bg-blue-600">
 						{#if deleting}
 							<button
 								in:fade|local={{ duration: 250 }}
@@ -196,14 +279,11 @@
 								}}>X</button
 							>
 						{:else if reordering}
-							<p
-								class="text-white bg-blue-600 text-center"
-								in:fade|local={{ duration: 250 }}
-							>
-								≡
-							</p>
+							<p class="text-white text-center" in:fade|local={{ duration: 250 }}>≡</p>
+						{:else if editing}
+							<p class="text-white text-center" in:fade|local={{ duration: 250 }}>Edit</p>
 						{:else}
-							<p class="text-white bg-blue-600 text-center" in:fade|local={{ duration: 250 }}>
+							<p class="text-white text-center" in:fade|local={{ duration: 250 }}>
 								{i + 1}
 							</p>
 						{/if}
@@ -224,7 +304,7 @@
 			{/each}
 		</div>
 	</div>
-	{#if adding}
+	{#if adding || selected_entry_index !== null}
 		<div
 			class="w-full h-1/2 bg-slate-800 grid grid-rows-2 place-items-center px-5 pt-1 pb-3 border-white transition-all"
 			in:fly|local={{ y: 100, duration: 400, opacity: 0 }}
@@ -246,7 +326,7 @@
 			</div>
 		</div>
 	{/if}
-	{#if adding || reordering || deleting}
+	{#if adding || reordering || editing || deleting}
 		<div
 			class="grid grid-cols-2 text-white bg-clip-padding font-medium"
 			in:fade|local={{ duration: 250 }}
@@ -272,7 +352,8 @@
 			>
 			<button
 				on:click={() => {
-					split_workouts[split_workout_name] = split_workouts_temp[split_workout_name]
+					editing = true;
+					enter_editing_mode();
 				}}>Edit</button
 			>
 			<button
