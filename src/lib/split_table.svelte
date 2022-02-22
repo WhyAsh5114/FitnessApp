@@ -196,7 +196,7 @@
 	}
 
 	function save_action() {
-		if (adding && entry_is_valid) {
+		if (adding && entry_is_valid()) {
 			adding = false;
 			let id = split_workouts[split_workout_name].length + 1;
 			split_workouts[split_workout_name].push({
@@ -226,6 +226,7 @@
 			deleting = false;
 			SplitWorkouts.set(split_workouts);
 		}
+		name = reps = sets = load = "";
 	}
 
 	function cancel_action() {
@@ -240,12 +241,16 @@
 		} else if (editing) {
 			editing = false;
 			deselect_entries();
+			split_workouts[split_workout_name] = JSON.parse(
+				JSON.stringify(split_workouts_temp[split_workout_name])
+			);
 		} else if (deleting) {
 			deleting = false;
 			split_workouts[split_workout_name] = JSON.parse(
 				JSON.stringify(split_workouts_temp[split_workout_name])
 			);
 		}
+		name = reps = sets = load = "";
 	}
 </script>
 
