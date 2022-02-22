@@ -204,7 +204,16 @@
 	function save_action() {
 		if (adding && entry_is_valid()) {
 			adding = false;
-			let id = split_workouts[split_workout_name].length + 1;
+
+			// DON'T REMOVE THIS
+			// This is done to prevent similar IDs of exercises
+			// which if happens, doesn't play well with svelte's each keyed block
+			let last_exercise_index = split_workouts[split_workout_name].length;
+			let id = 1;
+			if (last_exercise_index !== 0) {
+				id = split_workouts[split_workout_name][last_exercise_index - 1].id + 1;
+			}
+
 			split_workouts[split_workout_name].push({
 				id: id,
 				name: name,
@@ -233,7 +242,7 @@
 			deleting = false;
 			SplitWorkouts.set(split_workouts);
 		}
-		name = reps = sets = load = "";
+		name = reps = sets = load = '';
 	}
 
 	function cancel_action() {
@@ -258,7 +267,7 @@
 				JSON.stringify(split_workouts_temp[split_workout_name])
 			);
 		}
-		name = reps = sets = load = "";
+		name = reps = sets = load = '';
 	}
 </script>
 
