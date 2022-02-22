@@ -94,6 +94,12 @@
 		});
 	}
 
+	function exit_editing_mode() {
+		[].forEach.call(exercise_grid.children, (entry: HTMLDivElement, i: number) => {
+			entry.removeEventListener('click', select_entry_for_editing);
+		});
+	}
+
 	function deselect_entries() {
 		// Reset entry colors to default
 		let selected_entry_stats = document.querySelectorAll('.bg-teal-600');
@@ -221,6 +227,7 @@
 			entry.load = load;
 			split_workouts[split_workout_name][selected_entry_index] = entry;
 			deselect_entries();
+			exit_editing_mode();
 			SplitWorkouts.set(split_workouts);
 		} else if (deleting) {
 			deleting = false;
@@ -241,6 +248,7 @@
 		} else if (editing) {
 			editing = false;
 			deselect_entries();
+			exit_editing_mode();
 			split_workouts[split_workout_name] = JSON.parse(
 				JSON.stringify(split_workouts_temp[split_workout_name])
 			);
