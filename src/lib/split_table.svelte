@@ -281,7 +281,7 @@
 	</div>
 
 	<!-- Exercise table -->
-	<div class="h-full bg-slate-900 w-full overflow-y-auto container-snap transition-all">
+	<div class="h-full bg-slate-900 w-full overflow-y-auto container-snap">
 		<div class="grid w-full gap-1 h-fit max-h-0" bind:this={exercise_grid}>
 			{#each split_workouts[split_workout_name] as exercise, i (exercise.id)}
 				<div
