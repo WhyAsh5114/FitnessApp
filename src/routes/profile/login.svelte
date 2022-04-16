@@ -1,28 +1,48 @@
 <script lang="ts">
+	import { openModal } from 'svelte-modals';
+	import Modal from '$lib/basic_modal.svelte';
+	import { goto } from '$app/navigation';
+
 	let username: string;
 	let password: string;
 
 	async function login() {
-		try {
-			const res = await fetch('/auth/login', {
-				method: 'POST',
-				body: JSON.stringify({ username, password }),
-				headers: {
-					'Content-Type': 'application/json'
+		let errors = [];
+		if (!username) {
+			errors.push('Username should not be empty');
+		}
+		if (!password) {
+			errors.push('Password should not be empty');
+		}
+
+		if (errors.length === 0) {
+			try {
+				const res = await fetch('/auth/login', {
+					method: 'POST',
+					body: JSON.stringify({ username, password }),
+					headers: {
+						'Content-Type': 'application/json'
+					}
+				});
+				if (res.ok) {
+					console.log('going to');
+					goto('/profile');
+				} else {
+					openModal(Modal, { title: 'Request Error', messages: [res.status, res.statusText] });
 				}
-			});
-			if (res.ok) {
-				console.log('Logged in succesfully');
-			} else {
-				console.error('WTF');
+			} catch (err) {
+				console.log(err);
 			}
-		} catch (err) {
-			console.log(err);
+		} else {
+			openModal(Modal, { title: 'Error', messages: errors });
 		}
 	}
 </script>
 
-<form class="grid bg-stone-200 m-2 px-6 pt-4 pb-2 md:w-96 rounded-md justify-items-center h-fit">
+<form
+	class="grid bg-stone-200 m-2 px-6 pt-4 pb-2 md:w-96 rounded-md justify-items-center h-fit"
+	on:submit|preventDefault
+>
 	<h1 class="text-2xl text-slate-900 font-semibold mb-1">Welcome</h1>
 	<h1 class="text-lg text-slate-900 mb-4">Login to continue</h1>
 	<input
