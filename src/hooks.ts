@@ -1,33 +1,26 @@
-import type { GetSession, Handle } from '@sveltejs/kit';
-import * as cookie from 'cookie'
-import { createClient } from 'redis'
-
-const db = createClient();
-db.connect();
+import type { GetSession, Handle } from "@sveltejs/kit";
+import { parse } from "cookie";
+import { getSession as getSessionFromDB } from "./routes/api/_db";
 
 export const handle: Handle = async ({ request, resolve }) => {
-    const cookies = cookie.parse(request.headers.cookie || '')
+    const cookies = parse(request.headers.cookie || '');
+
     if (cookies.session_id) {
-        const session = JSON.parse(await db.get(cookies.session_id));
-        if (session) {
-            request.locals.user = { username: session.username };
+        const username = await getSessionFromDB(cookies.session_id);
+        if (username) {
+            request.locals.user = { username: username };
             return resolve(request);
         }
-    } else {
-        request.locals.user = null;
-        return resolve(request);
     }
+
+    request.locals.user = null;
+    return resolve(request);
 }
 
-export const getSession: GetSession = async (request) => {
-    // If request coming from authenticated source (contains user data) return it, else return nothing like default
-    try {
-        return {
+export const getSession: GetSession = (request) => {
+    return request?.locals?.user ? {
+        user: {
             username: request.locals.user.username
         }
-    } catch (error) {
-        if (error instanceof TypeError) {
-            return {}
-        }   
-    }
+    } : {};
 }
