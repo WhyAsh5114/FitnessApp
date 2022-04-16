@@ -1,7 +1,18 @@
+<script context="module" lang="ts">
+	// If user is logged in, redirect to /profile
+	export async function load({ session }) {
+		if(session?.user) {
+			return {
+				status: 302,
+				redirect: '/profile'
+			}
+		} else { return {} }
+	}
+</script>
+
 <script lang="ts">
 	import { openModal } from 'svelte-modals';
 	import Modal from '$lib/basic_modal.svelte';
-	import { goto } from '$app/navigation';
 
 	let username: string;
 	let password: string;
@@ -17,7 +28,7 @@
 
 		if (errors.length === 0) {
 			try {
-				const res = await fetch('/auth/login', {
+				const res = await fetch('/api/login', {
 					method: 'POST',
 					body: JSON.stringify({ username, password }),
 					headers: {
@@ -25,13 +36,12 @@
 					}
 				});
 				if (res.ok) {
-					console.log('going to');
-					goto('/profile');
+					window.location.href = '/profile'
 				} else {
 					openModal(Modal, { title: 'Request Error', messages: [res.status, res.statusText] });
 				}
 			} catch (err) {
-				console.log(err);
+				openModal(Modal, { title: 'Error', messages: [err] });
 			}
 		} else {
 			openModal(Modal, { title: 'Error', messages: errors });
