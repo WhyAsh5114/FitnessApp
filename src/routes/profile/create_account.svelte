@@ -41,7 +41,7 @@
 	}
 </script>
 
-<div class="grid bg-stone-200 m-2 px-6 pt-4 pb-2 md:w-96 rounded-md justify-items-center h-fit">
+<form class="grid bg-stone-200 m-2 px-6 pt-4 pb-2 md:w-96 rounded-md justify-items-center h-fit">
 	<h1 class="text-2xl text-slate-900 font-semibold mb-1">Welcome</h1>
 	<h1 class="text-lg text-slate-900 mb-4">Register</h1>
 	<input
@@ -69,4 +69,4 @@
 	>
 	<div class="mt-7 w-full bg-black h-px" />
 	<a href="/profile/login" class="text-blue-700 mt-1">Already have an account? Login</a>
-</div>
+</form>
