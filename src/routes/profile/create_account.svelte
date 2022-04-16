@@ -68,5 +68,5 @@
 		>Submit</button
 	>
 	<div class="mt-7 w-full bg-black h-px" />
-	<a href="/login" class="text-blue-700 mt-1">Already have an account? Login</a>
+	<a href="/profile/login" class="text-blue-700 mt-1">Already have an account? Login</a>
 </div>

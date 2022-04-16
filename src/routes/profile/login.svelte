@@ -46,5 +46,5 @@
 		>Submit</button
 	>
 	<div class="mt-7 w-full bg-black h-px" />
-	<a href="login/create_account" class="text-blue-700 mt-1">Create an account</a>
+	<a href="/profile/create_account" class="text-blue-700 mt-1">Create an account</a>
 </div>
