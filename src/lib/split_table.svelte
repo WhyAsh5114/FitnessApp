@@ -120,7 +120,7 @@
 			child.classList.add('bg-teal-600');
 		});
 		selected_entry_index = [].indexOf.call(exercise_grid.children, entry);
-		console.log(selected_entry_index);
+
 		name = entry.children[1].textContent;
 		reps = entry.children[2].textContent;
 		sets = entry.children[3].textContent;
@@ -228,7 +228,6 @@
 			SplitWorkouts.set(split_workouts);
 		} else if (editing && entry_is_valid()) {
 			editing = false;
-			console.log(selected_entry_index);
 			let entry = split_workouts[split_workout_name][selected_entry_index];
 			entry.name = name;
 			entry.reps = reps;
