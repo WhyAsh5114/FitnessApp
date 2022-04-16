@@ -1,9 +1,9 @@
 import bcrypt from 'bcrypt'
 import { v4 as uuid } from 'uuid'
 import * as cookie from 'cookie'
-import redis from 'redis'
+import { createClient } from 'redis'
 
-const db = redis.createClient()
+const db = createClient()
 db.connect()
 
 export async function post({ body }: Request & { body: { username: string, password: string } }): Promise<unknown> {
@@ -27,7 +27,7 @@ export async function post({ body }: Request & { body: { username: string, passw
             await db.set(cookieID, JSON.stringify(body.username))
 
             const headers = {
-                'Set-Cookie': cookie.serialize('Session-ID', cookieID, {
+                'Set-Cookie': cookie.serialize('session_id', cookieID, {
                     httpOnly: true,
                     maxAge: 60 * 60 * 24 * 7,   // 1 week
                     sameSite: 'strict',
