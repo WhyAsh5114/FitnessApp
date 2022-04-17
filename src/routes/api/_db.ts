@@ -33,8 +33,8 @@ export const registerUser = async (user: { username: string, password: string })
         user.password = hashedPassword;
 
         // Set extra data fields
-        user['splits'] = []
-        user['workouts'] = []
+        user['splits'] = {}
+        user['workouts'] = {}
 
         await db.set(user.username, JSON.stringify(user));
         return Promise.resolve(user);
