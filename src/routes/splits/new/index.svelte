@@ -47,6 +47,10 @@
 	function update_unique_workouts() {
 		unique_workouts = [];
 		split_schedule.forEach((workout, i) => {
+			// Capitalise the first letter of the workout in the split_schedule
+			workout = workout.charAt(0).toUpperCase() + workout.slice(1);
+			split_schedule[i] = workout
+
 			// Remove the workout from the split_schedule if its rest
 			if (workout === 'rest') {
 				split_schedule[i] = '';
@@ -67,7 +71,7 @@
 		SplitSchedule.set(split_schedule);
 
 		let split_workouts: Object = {};
-		unique_workouts.forEach((workout: string) => {
+		unique_workouts.forEach((workout: string, i) => {
 			split_workouts[workout] = [];
 		});
 		SplitWorkouts.set(split_workouts);

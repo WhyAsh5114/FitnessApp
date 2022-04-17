@@ -1,7 +1,6 @@
 <script type="typescript">
 	import { openModal } from 'svelte-modals';
 	import Modal from '$lib/basic_modal.svelte';
-	import { slide } from 'svelte/transition';
 
 	import { SplitName, SplitSchedule, SplitWorkouts } from '../newSplitStore';
 	import SplitTable from '$lib/split_table.svelte'
@@ -15,9 +14,6 @@
 		split_schedule = value;
 		unique_workouts = [];
 		split_schedule.forEach((workout, i) => {
-			// Capitalise the first letter of the workout in the split_schedule
-			split_schedule[i] = split_schedule[i].charAt(0).toUpperCase() + split_schedule[i].slice(1);
-
 			// Remove the workout from the split_schedule if its rest
 			if (workout.toLowerCase() === 'rest') {
 				split_schedule[i] = '';
