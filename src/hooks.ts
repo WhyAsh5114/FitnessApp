@@ -1,12 +1,12 @@
 import type { GetSession, Handle } from "@sveltejs/kit";
 import { parse } from "cookie";
-import { getSession as getSessionFromDB } from "./routes/api/_db";
+import { getUsernameFromSession } from "./routes/api/_db";
 
 export const handle: Handle = async ({ request, resolve }) => {
     const cookies = parse(request.headers.cookie || '');
 
     if (cookies.session_id) {
-        const username = await getSessionFromDB(cookies.session_id);
+        const username = await getUsernameFromSession(cookies.session_id);
         if (username) {
             request.locals.user = { username: username };
             return resolve(request);
