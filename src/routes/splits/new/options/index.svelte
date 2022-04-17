@@ -1,4 +1,4 @@
-<script type="typescript">
+<script lang="ts">
 	import { SplitWorkouts } from '../newSplitStore';
 
 	let split_workouts: Object;

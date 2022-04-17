@@ -1,4 +1,4 @@
-<script type="typescript">
+<script lang="ts">
     import MenuButton from "$lib/menu_button.svelte";
     import MenuButtonGrid from "$lib/menu_button_grid.svelte";
 </script>

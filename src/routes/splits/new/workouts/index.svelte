@@ -1,11 +1,11 @@
-<script type="typescript">
+<script lang="ts">
 	import { openModal } from 'svelte-modals';
 	import Modal from '$lib/basic_modal.svelte';
 
 	import { SplitName, SplitSchedule, SplitWorkouts } from '../newSplitStore';
 	import SplitTable from '$lib/split_table.svelte'
 
-	let exercise_table;
+	let exercise_table: SplitTable;
 	let valid: boolean;
 
 	let split_schedule: string[];
