@@ -3,7 +3,7 @@
 	import Modal from '$lib/basic_modal.svelte';
 
 	import { SplitName, SplitSchedule, SplitWorkouts } from '../newSplitStore';
-	import SplitTable from '$lib/split_table.svelte'
+	import SplitTable from '$lib/split_table.svelte';
 
 	let exercise_table: SplitTable;
 	let valid: boolean;
@@ -68,47 +68,54 @@
 	}
 </script>
 
-<div class="flex flex-col w-full h-full pt-2 bg-slate-900 2xl:w-1/2">
-	<h2 class="text-white text-2xl py-2 font-bold text-center bg-slate-700">{split_name}</h2>
-	<div class="flex bg-slate-600 w-full justify-between">
-		<div class="w-1/6 bg-slate-800">
-			{#if unique_workouts.indexOf(current_workout) !== 0}
-				<button
-					class="text-white text-xl w-full bg-slate-800 h-full text-center"
-					on:click={previous_workout}>&lt;</button
-				>
-			{/if}
-		</div>
-		<p class="text-white text-xl py-1 font-semibold">{current_workout}</p>
-		<div class="w-1/6 bg-slate-800">
-			{#if unique_workouts.indexOf(current_workout) + 1 !== Object.keys(unique_workouts).length}
-				<button
-					class="text-white text-xl w-full bg-slate-800 h-full text-center"
-					on:click={next_workout}>&gt;</button
-				>
-			{/if}
-		</div>
-	</div>
-	{#key current_workout}
-		<div class="h-full">
-			<SplitTable
-				split_workout_name={current_workout}
-				bind:this={exercise_table}
-			/>
-		</div>
-	{/key}
-	<div class="text-white text-center py-2 bg-blue-500 text-lg">
-		{#if valid}
-			<div class="h-full grid place-items-center">
-				<a href="/splits/new/options" class="w-full font-semibold">Set split options</a>
+{#if current_workout}
+	<div class="flex flex-col w-full h-full pt-2 bg-slate-900 2xl:w-1/2">
+		<h2 class="text-white text-2xl py-2 font-bold text-center bg-slate-700">{split_name}</h2>
+		<div class="flex bg-slate-600 w-full justify-between">
+			<div class="w-1/6 bg-slate-800">
+				{#if unique_workouts.indexOf(current_workout) !== 0}
+					<button
+						class="text-white text-xl w-full bg-slate-800 h-full text-center"
+						on:click={previous_workout}>&lt;</button
+					>
+				{/if}
 			</div>
-		{:else}
-			<button
-				class="w-full h-full font-semibold"
-				on:click={() => {
-					validate_split(true);
-				}}>Set split options</button
-			>
-		{/if}
+			<p class="text-white text-xl py-1 font-semibold">{current_workout}</p>
+			<div class="w-1/6 bg-slate-800">
+				{#if unique_workouts.indexOf(current_workout) + 1 !== Object.keys(unique_workouts).length}
+					<button
+						class="text-white text-xl w-full bg-slate-800 h-full text-center"
+						on:click={next_workout}>&gt;</button
+					>
+				{/if}
+			</div>
+		</div>
+		{#key current_workout}
+			<div class="h-full">
+				<SplitTable split_workout_name={current_workout} bind:this={exercise_table} />
+			</div>
+		{/key}
+		<div class="text-white text-center py-2 bg-blue-500 text-lg">
+			{#if valid}
+				<div class="h-full grid place-items-center">
+					<a href="/splits/new/options" class="w-full font-semibold">Set split options</a>
+				</div>
+			{:else}
+				<button
+					class="w-full h-full font-semibold"
+					on:click={() => {
+						validate_split(true);
+					}}>Set split options</button
+				>
+			{/if}
+		</div>
 	</div>
-</div>
+{:else}
+	<div class="flex flex-col gap-5 place-items-center">
+		<p class="text-white text-lg">No split schedule created</p>
+		<a
+			class="text-white bg-blue-500 px-2 py-1 rounded-full hover:bg-blue-600 w-1/2 text-center"
+			href="/splits/new">Create here</a
+		>
+	</div>
+{/if}
