@@ -1,6 +1,5 @@
 import { loginUser, getUser } from './_db';
 import { serialize } from 'cookie';
-import { goto } from '$app/navigation';
 
 export async function post({ body }: Request & { body: { username: string, password: string } }): Promise<unknown> {
     const user = await getUser(body.username);
