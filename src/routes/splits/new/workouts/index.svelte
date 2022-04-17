@@ -40,8 +40,6 @@
 	let current_workout: string = unique_workouts[0];
 
 	function validate_split(show_modal: boolean) {
-		// TODO FIX THE IDs OF THE EXERCISES BEFORE MOVING ON, THEY CHANGE AFTER DELETING, PLEASE
-		// ! SEE THIS !~~~
 		let errors = [];
 		for (let [workout, exercises] of Object.entries(split_workouts)) {
 			if (exercises.length === 0) {
