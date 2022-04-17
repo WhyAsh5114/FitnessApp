@@ -1,12 +1,24 @@
+<script context="module" lang="ts">
+	export async function load({ session }) {
+		// If user not logged in, redirect to login
+		if (!session?.user) {
+			return {
+				status: 302,
+				redirect: '/profile/login'
+			};
+		} else { return {} }
+	}
+</script>
+
 <script lang="ts">
 	import { SplitName, SplitSchedule, SplitWorkouts } from './newSplitStore';
-
 	import { openModal } from 'svelte-modals';
 	import Modal from '$lib/basic_modal.svelte';
 
 	let split_name: string = '';
 	let split_schedule: string[] = [];
 	let is_split_valid: boolean = false;
+	let split_exists_in_userdata = false;
 
 	let days: string[] = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 	let unique_workouts: string[];
@@ -23,9 +35,20 @@
 	// So that the entered schedule is not lost when redirected to a new page
 	update_unique_workouts();
 
-	function check_split_validity() {
+	async function check_split_validity() {
 		if (split_name !== '' && unique_workouts.length > 0) {
-			is_split_valid = true;
+			const res = await fetch('/api/isSplitCreatable', {
+				method: 'POST',
+				body: split_name
+			})
+			// If split not found in user data, it is ok to create new one otherwise
+			// there'll be a name conflict in database, older split will be overwritten
+			if(res.ok) {
+				is_split_valid = true;
+			} else {
+				is_split_valid = false;
+				split_exists_in_userdata = true;
+			}
 		} else {
 			is_split_valid = false;
 		}
@@ -39,6 +62,9 @@
 		}
 		if (unique_workouts.length === 0) {
 			errors.push('Enter at least 1 workout');
+		}
+		if (split_exists_in_userdata) {
+			errors.push('Split already exists')
 		}
 		openModal(Modal, { title: 'Error', messages: errors });
 	}
