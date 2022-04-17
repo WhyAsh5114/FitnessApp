@@ -15,21 +15,13 @@
 	import { openModal } from 'svelte-modals';
 	import Modal from '$lib/basic_modal.svelte';
 
-	let split_name: string = '';
-	let split_schedule: string[] = [];
+	let split_name: string = $SplitName;
+	let split_schedule: string[] = $SplitSchedule;
 	let is_split_valid: boolean = false;
 	let split_exists_in_userdata = false;
 
 	let days: string[] = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 	let unique_workouts: string[];
-
-	SplitName.subscribe((value: string) => {
-		split_name = value;
-	});
-
-	SplitSchedule.subscribe((value: string[]) => {
-		split_schedule = value;
-	});
 
 	// Update the split name and schedule immediately after page load
 	// So that the entered schedule is not lost when redirected to a new page
