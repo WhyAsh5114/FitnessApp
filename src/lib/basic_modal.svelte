@@ -61,7 +61,7 @@
 	h2 {
 		text-align: center;
 		font-size: 24px;
-		@apply font-semibold text-red-500;
+		@apply font-semibold text-white;
 	}
 
 	ul {
