@@ -11,18 +11,27 @@ export async function post({ body }: Request & { body: { username: string, passw
             }
         }
     } else {
-        const id = await loginUser(body);
-        return {
-            status: 200,
-            headers: {
-                'Set-Cookie': serialize('session_id', id, {
-                    path: '/',
-                    httpOnly: true,
-                    sameSite: 'strict',
-                    maxAge: 60 * 60 * 24 * 7
-                }),
-            body: {
-                    message: "Logged in successfully"
+        try {
+            const id = await loginUser(body);
+            return {
+                status: 200,
+                headers: {
+                    'Set-Cookie': serialize('session_id', id, {
+                        path: '/',
+                        httpOnly: true,
+                        sameSite: 'strict',
+                        maxAge: 60 * 60 * 24 * 7
+                    }),
+                    body: {
+                        message: "Logged in successfully"
+                    }
+                }
+            }
+        } catch (error) {
+            return {
+                status: 401,
+                body: {
+                    message: "Invalid credentials"
                 }
             }
         }
