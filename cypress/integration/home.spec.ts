@@ -9,21 +9,18 @@ describe('Testing home page', () => {
         cy.get('a').contains("Splits").click()
         cy.get('a').should('contain.text', 'New Split')
     })
-})
 
-describe('Testing login page', () => {
-    beforeEach(() => {
-        cy.visit('http://localhost:3000/profile')
+    it('should redirect to logging page', () => {
+        cy.get('a').contains("Logging").click()
+        cy.get('a').should('contain.text', 'Log Workout')
     })
 
-    it('should redirect to login instead of profile', () => {
-        cy.get('h1').should('contain.text', 'Login to continue');
+    it('should redirect to records page', () => {
+        cy.get('a').contains("Records").click()
+        cy.get('a').should('contain.text', 'Splits Records')
     })
 
-    it('should throw error (user not found)', () => {
-        cy.get('input[placeholder=Username]').type('unknown_username')
-        cy.get('input[placeholder=Password]').type('unknown_password')
-        cy.get('button').contains('Submit').click()
-        cy.get('li').contains('Not Found')
+    it('should redirect to tracking page', () => {
+        cy.get('a').contains("Tracking").click()
     })
 })
