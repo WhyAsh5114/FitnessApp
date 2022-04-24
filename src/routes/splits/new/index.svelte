@@ -70,12 +70,12 @@
 			split_schedule[i] = workout
 
 			// Remove the workout from the split_schedule if its rest
-			if (workout === 'rest') {
+			if (workout === 'Rest') {
 				split_schedule[i] = '';
 			}
 
 			// Add the workout to unique_workouts if its new and isn't blank or rest
-			if (!unique_workouts.includes(workout) && workout !== '' && workout !== 'rest') {
+			if (!unique_workouts.includes(workout) && workout !== '' && workout !== 'Rest') {
 				unique_workouts.push(workout);
 			}
 		});
@@ -105,9 +105,10 @@
 			bind:value={split_name}
 			type="text"
 			class="text-center outline-none rounded-sm font-semibold shadow-black shadow-sm mr-5"
+			data-cy="split-name-input"
 		/>
 	</div>
-	<div class="grid gap-2">
+	<div class="grid gap-2" data-cy="split-schedule-grid">
 		{#each days as day, i}
 			<div class="grid grid-cols-2 shadow-black bg-pink-700 rounded-full p-2 w-full">
 				<p class="text-white text-center text-lg font-medium">
