@@ -5,7 +5,6 @@
 	import { SplitName, SplitSchedule, SplitWorkouts } from '../newSplitStore';
 	import SplitTable from '$lib/split_table.svelte';
 
-	let exercise_table: SplitTable;
 	let valid: boolean;
 
 	let split_schedule: string[];
@@ -90,7 +89,7 @@
 		</div>
 		{#key current_workout}
 			<div class="h-full">
-				<SplitTable split_workout_name={current_workout} bind:this={exercise_table} />
+				<SplitTable split_workout_name={current_workout} />
 			</div>
 		{/key}
 		<div class="text-white text-center py-2 bg-blue-500 text-lg">
