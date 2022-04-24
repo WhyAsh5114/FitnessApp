@@ -2,6 +2,7 @@
 
 describe('Testing register', () => {
     before(() => {
+        // Clear database to avoid conflicts
         cy.task('flushDB')
     })
 

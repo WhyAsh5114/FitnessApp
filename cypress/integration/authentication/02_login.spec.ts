@@ -3,6 +3,7 @@
 describe('Testing login', () => {
     beforeEach(() => {
         cy.visit('http://localhost:3000/profile')
+        Cypress.Cookies.preserveOnce('session_id')
     })
 
     it('should redirect to login instead of profile', () => {
