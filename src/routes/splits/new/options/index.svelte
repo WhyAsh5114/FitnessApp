@@ -4,20 +4,9 @@
 	import { SplitWorkouts, SplitName, SplitSchedule } from '../newSplitStore';
 	import Modal from '$lib/basic_modal.svelte'
 
-	let split_workouts: Object;
-	SplitWorkouts.subscribe((value: Object) => {
-		split_workouts = value;
-	});
-
-	let split_name: string;
-	SplitName.subscribe((value: string) => {
-		split_name = value;
-	});
-
-	let split_schedule: string[];
-	SplitSchedule.subscribe((value: string[]) => {
-		split_schedule = value;
-	});
+	let split_workouts: Object = $SplitWorkouts;
+	let split_name: string = $SplitName;
+	let split_schedule: string[] = $SplitSchedule;
 
 	let value = 5;
 

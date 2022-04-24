@@ -7,10 +7,7 @@
 	import Footer from '$lib/footer.svelte';
 	import { cubicIn, linear, quadInOut } from 'svelte/easing';
 
-	let url;
-	page.subscribe((value) => {
-		url = value;
-	});
+	let url = $page;
 </script>
 
 <!-- Modal -->

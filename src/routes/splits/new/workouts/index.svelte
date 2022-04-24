@@ -25,10 +25,7 @@
 		});
 	});
 
-	let split_name: string;
-	SplitName.subscribe((value: string) => {
-		split_name = value;
-	});
+	let split_name: string = $SplitName;
 
 	let split_workouts: object;
 	SplitWorkouts.subscribe((value: object) => {
