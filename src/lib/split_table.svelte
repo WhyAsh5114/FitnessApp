@@ -295,6 +295,7 @@
 							<button
 								in:fade|local={{ duration: 250 }}
 								class="text-white bg-red-700 font-semibold w-full"
+								data-cy="remove-exercise-btn"
 								on:click={function () {
 									remove_entry(exercise.id);
 								}}>X</button
@@ -304,21 +305,21 @@
 						{:else if editing}
 							<p class="text-white text-center" in:fade|local={{ duration: 250 }}>Edit</p>
 						{:else}
-							<p class="text-white text-center" in:fade|local={{ duration: 250 }}>
+							<p class="text-white text-center" in:fade|local={{ duration: 250 }} data-cy="exercise-id-p">
 								{i + 1}
 							</p>
 						{/if}
 					</div>
-					<p class="text-white bg-blue-600 text-center overflow-x-scroll container-snap">
+					<p class="text-white bg-blue-600 text-center overflow-x-scroll container-snap" data-cy="exercise-name-p">
 						{exercise.name}
 					</p>
-					<p class="text-white bg-blue-600 text-center overflow-x-scroll container-snap">
+					<p class="text-white bg-blue-600 text-center overflow-x-scroll container-snap" data-cy="exercise-reps-p">
 						{exercise.reps}
 					</p>
-					<p class="text-white bg-blue-600 text-center overflow-x-scroll container-snap">
+					<p class="text-white bg-blue-600 text-center overflow-x-scroll container-snap" data-cy="exercise-sets-p">
 						{exercise.sets}
 					</p>
-					<p class="text-white bg-blue-600 text-center overflow-x-scroll container-snap">
+					<p class="text-white bg-blue-600 text-center overflow-x-scroll container-snap" data-cy="exercise-load-p">
 						{exercise.load}
 					</p>
 				</div>
@@ -333,7 +334,7 @@
 		>
 			<div class="flex w-full justify-evenly flex-col">
 				<p class="text-center font-semibold text-lg text-white">Name</p>
-				<input type="text" class="outline-none text-center" bind:value={name} />
+				<input type="text" class="outline-none text-center" bind:value={name} data-cy="exercise-name-input"/>
 			</div>
 			<div
 				class="grid grid-cols-3 grid-rows-2 place-items-stretch w-full text-center gap-x-12 px-12"
@@ -341,9 +342,9 @@
 				<p class="text-white">Reps</p>
 				<p class="text-white">Sets</p>
 				<p class="text-white">Load</p>
-				<input type="text" class="outline-none text-center" bind:value={reps} />
-				<input type="text" class="outline-none text-center" bind:value={sets} />
-				<input type="text" class="outline-none text-center" bind:value={load} />
+				<input type="text" class="outline-none text-center" bind:value={reps} data-cy="exercise-reps-input"/>
+				<input type="text" class="outline-none text-center" bind:value={sets} data-cy="exercise-sets-input"/>
+				<input type="text" class="outline-none text-center" bind:value={load} data-cy="exercise-load-input"/>
 			</div>
 		</div>
 	{/if}

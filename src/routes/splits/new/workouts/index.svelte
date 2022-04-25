@@ -74,7 +74,7 @@
 					>
 				{/if}
 			</div>
-			<p class="text-white text-xl py-1 font-semibold">{current_workout}</p>
+			<p class="text-white text-xl py-1 font-semibold" data-cy="split-name">{current_workout}</p>
 			<div class="w-1/6 bg-slate-800">
 				{#if unique_workouts.indexOf(current_workout) + 1 !== Object.keys(unique_workouts).length}
 					<button
