@@ -19,7 +19,7 @@
 </script>
 
 <script lang="ts">
-	export let username;
+	export let username: string;
 
 	async function logout() {
 		await fetch('/api/logout', {
