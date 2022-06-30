@@ -6,7 +6,9 @@
 				status: 302,
 				redirect: '/profile/login'
 			};
-		} else { return {} }
+		} else {
+			return {};
+		}
 	}
 </script>
 
@@ -32,10 +34,10 @@
 			const res = await fetch('/api/isSplitCreatable', {
 				method: 'POST',
 				body: split_name
-			})
+			});
 			// If split not found in user data, it is ok to create new one otherwise
 			// there'll be a name conflict in database, older split will be overwritten
-			if(res.ok) {
+			if (res.ok) {
 				is_split_valid = true;
 			} else {
 				is_split_valid = false;
@@ -56,7 +58,7 @@
 			errors.push('Enter at least 1 workout');
 		}
 		if (split_exists_in_userdata) {
-			errors.push('Split already exists')
+			errors.push('Split already exists');
 		}
 		openModal(Modal, { title: 'Error', messages: errors });
 	}
@@ -67,7 +69,7 @@
 		split_schedule.forEach((workout, i) => {
 			// Capitalise the first letter of the workout in the split_schedule
 			workout = workout.charAt(0).toUpperCase() + workout.slice(1);
-			split_schedule[i] = workout
+			split_schedule[i] = workout;
 
 			// Remove the workout from the split_schedule if its rest
 			if (workout === 'Rest') {
@@ -79,7 +81,7 @@
 				unique_workouts.push(workout);
 			}
 		});
-		
+
 		// After a possible change in the number of split_schedule, update the validity of the split
 		check_split_validity();
 	}

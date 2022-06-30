@@ -7,7 +7,7 @@
 				status: 302,
 				redirect: '/profile/login'
 			};
-		// Else set username to be accessible in client
+			// Else set username to be accessible in client
 		} else {
 			return {
 				props: {
@@ -28,7 +28,7 @@
 				'Content-Type': 'application/json'
 			}
 		});
-        window.location.href = '/profile/login'
+		window.location.href = '/profile/login';
 	}
 </script>
 

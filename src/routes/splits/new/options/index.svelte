@@ -2,7 +2,7 @@
 	import { goto } from '$app/navigation';
 	import { openModal } from 'svelte-modals';
 	import { SplitWorkouts, SplitName, SplitSchedule } from '../newSplitStore';
-	import Modal from '$lib/basic_modal.svelte'
+	import Modal from '$lib/basic_modal.svelte';
 
 	let split_workouts: Object = $SplitWorkouts;
 	let split_name: string = $SplitName;
@@ -12,24 +12,23 @@
 
 	async function save_split() {
 		// Reset IDs
-		for(let [workout_name, workout] of Object.entries(split_workouts)) {
-			workout.forEach((exercise: { id: number; }, i: number) => {
-				exercise.id = i + 1;		// IDs start from 1
+		for (let [workout_name, workout] of Object.entries(split_workouts)) {
+			workout.forEach((exercise: { id: number }, i: number) => {
+				exercise.id = i + 1; // IDs start from 1
 			});
 		}
-		
+
 		const res = await fetch('/api/saveSplit', {
 			method: 'POST',
-			body: JSON.stringify({name: split_name, schedule: split_schedule, workouts: split_workouts})
-		})
+			body: JSON.stringify({ name: split_name, schedule: split_schedule, workouts: split_workouts })
+		});
 
-		if(res.ok) {
+		if (res.ok) {
 			goto('/');
-			openModal(Modal, {title: "Success", messages: ["Split saved successfully"]})
+			openModal(Modal, { title: 'Success', messages: ['Split saved successfully'] });
 		}
 	}
 </script>
-
 
 {#if Object.keys(split_workouts).length !== 0}
 	<div class="grid gap-10 w-full place-items-center xl:w-3/4">
@@ -57,8 +56,7 @@
 		</div>
 		<button
 			class="text-white font-semibold rounded-full bg-blue-600 w-1/2 xl:w-1/4 py-2 hover:bg-blue-700 active:bg-blue-800 shadow-sm shadow-black"
-			on:click={save_split}
-			>Save Split</button
+			on:click={save_split}>Save Split</button
 		>
 	</div>
 {:else}

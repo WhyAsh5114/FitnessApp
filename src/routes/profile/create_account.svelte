@@ -1,12 +1,14 @@
 <script context="module" lang="ts">
 	// If user is logged in, redirect to /profile
 	export async function load({ session }) {
-		if(session?.user) {
+		if (session?.user) {
 			return {
 				status: 302,
 				redirect: '/profile'
-			}
-		} else { return {} }
+			};
+		} else {
+			return {};
+		}
 	}
 </script>
 
@@ -40,7 +42,7 @@
 					}
 				});
 				if (res.ok) {
-					window.location.href = '/profile'
+					window.location.href = '/profile';
 				} else {
 					openModal(Modal, { title: 'Request Error', messages: [res.status, res.statusText] });
 				}
