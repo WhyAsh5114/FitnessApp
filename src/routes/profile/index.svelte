@@ -2,7 +2,7 @@
 	export const router = false;
 	export async function load({ session }) {
 		// If user not logged in, redirect to login
-		if (!session?.user) {
+		if (!session?.username) {
 			return {
 				status: 302,
 				redirect: '/profile/login'

@@ -1,7 +1,7 @@
 <script context="module" lang="ts">
 	// If user is logged in, redirect to /profile
 	export async function load({ session }) {
-		if (session?.user) {
+		if (session?.username) {
 			return {
 				status: 302,
 				redirect: '/profile'

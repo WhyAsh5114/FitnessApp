@@ -1,26 +1,29 @@
-import type { GetSession, Handle } from "@sveltejs/kit";
-import { parse } from "cookie";
-import { getUsernameFromSession } from "./routes/api/_db";
+import type { GetSession, Handle } from '@sveltejs/kit';
+import { parse } from 'cookie';
+import { getUsernameFromSession } from './routes/api/_db';
 
-export const handle: Handle = async ({ request, resolve }) => {
-    const cookies = parse(request.headers.cookie || '');
+export const handle: Handle = async ({ event, resolve }) => {
+    const response = await resolve(event);
+    const cookies = parse(event.request.headers.get('cookie') || '');
 
     if (cookies.session_id) {
         const username = await getUsernameFromSession(cookies.session_id);
         if (username) {
-            request.locals.user = { username: username };
-            return resolve(request);
+            event.locals = { username };
+            return resolve(event);
         }
     }
 
-    request.locals.user = null;
-    return resolve(request);
-}
+    event.locals = null;
+    return response;
+};
 
 export const getSession: GetSession = (request) => {
-    return request?.locals?.user ? {
-        user: {
-            username: request.locals.user.username
+    if (request?.locals["username"]) {
+        return {
+            username: request.locals["username"]
         }
-    } : {};
-}
+    } else {
+        return {};
+    }
+};
