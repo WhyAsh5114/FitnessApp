@@ -1,8 +1,10 @@
 import { loginUser, getUser } from './_db';
-import { serialize } from 'cookie';
+import type { RequestHandler } from '@sveltejs/kit';
 
-export async function post({ body }: Request & { body: { username: string, password: string } }): Promise<unknown> {
+export const POST: RequestHandler = async ({ request }) => {
+    const body = await request.json();
     const user = await getUser(body.username);
+    
     if (!user) {
         return {
             status: 404,
@@ -16,15 +18,8 @@ export async function post({ body }: Request & { body: { username: string, passw
             return {
                 status: 200,
                 headers: {
-                    'Set-Cookie': serialize('session_id', id, {
-                        path: '/',
-                        httpOnly: true,
-                        sameSite: 'strict',
-                        maxAge: 60 * 60 * 24 * 7
-                    }),
-                    body: {
-                        message: "Logged in successfully"
-                    }
+                    'set-cookie': `session_id=${id}; Max-Age=604800; Path=/; SameSite=Strict HttpOnly`,
+                    body: "Logged in successfully"
                 }
             }
         } catch (error) {
