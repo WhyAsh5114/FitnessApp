@@ -14,14 +14,14 @@ export const handle: Handle = async ({ event, resolve }) => {
 		}
 	}
 
-	event.locals = null;
+	event.locals = {};
 	return response;
 };
 
 export const getSession: GetSession = (request) => {
-	if (request?.locals['username']) {
+	if (request?.locals.username) {
 		return {
-			username: request.locals['username']
+			username: request.locals.username
 		};
 	} else {
 		return {};
