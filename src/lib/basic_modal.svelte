@@ -18,9 +18,11 @@
 		});
 	});
 
-	onDestroy(() => {
-		onClose();
-	})
+	if (onClose !== null) {
+		onDestroy(() => {
+			onClose();
+		});
+	}
 </script>
 
 {#if isOpen}
