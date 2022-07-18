@@ -343,7 +343,7 @@
 			{/each}
 		</div>
 	</div>
-	{#if adding || selected_entry_index !== null}
+	{#if adding || selected_entry_index }
 		<div
 			class="w-full h-1/2 bg-slate-800 grid grid-rows-2 place-items-center px-5 pt-1 pb-3 border-white transition-all"
 			in:fly|local={{ y: 100, duration: 400, opacity: 0 }}
