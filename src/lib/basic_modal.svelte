@@ -1,11 +1,12 @@
 <script lang="ts">
-	import { onMount } from 'svelte';
+	import { onDestroy, onMount } from 'svelte';
 
 	import { closeModal } from 'svelte-modals';
 
 	export let isOpen: boolean;
 	export let title: string;
 	export let messages = [];
+	export let onClose: Function = null;
 
 	let textarea: HTMLUListElement;
 
@@ -16,6 +17,10 @@
 			textarea.appendChild(message_element);
 		});
 	});
+
+	onDestroy(() => {
+		onClose();
+	})
 </script>
 
 {#if isOpen}
