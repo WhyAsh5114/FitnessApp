@@ -1,8 +1,9 @@
 import { removeSession } from './_db';
 import { parse, serialize } from 'cookie';
+import type { RequestHandler } from '@sveltejs/kit';
 
-export async function get({ headers }: Request & { headers: { cookie } }): Promise<unknown> {
-    const cookies = parse(headers.cookie || '');
+export const GET: RequestHandler = async ({ request }) => {
+    const cookies = parse(request.headers.get('set-cookie') || '');
 
     if (cookies.session_id) {
         await removeSession(cookies.session_id);
@@ -11,7 +12,7 @@ export async function get({ headers }: Request & { headers: { cookie } }): Promi
     return {
         status: 201,
         headers: {
-            'Set-Cookie': serialize('session_id', '', {
+            'set-cookie': serialize('session_id', '', {
                 path: '/',
                 httpOnly: true,
                 sameSite: 'strict',
