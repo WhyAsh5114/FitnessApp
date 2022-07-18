@@ -20,16 +20,16 @@
 	let sets = '';
 	let load = '';
 
-	let selected_entry_index = null;
+	let selected_entry_index: number | undefined;
 
 	// Component prop
-	export let split_workout_name: string = null;
+	export let split_workout_name: string;
 
 	// split_workouts_temp is a temp variable in case the user
 	// cancels the delete or rearrange function
-	let split_workouts_temp: Object;
-	let split_workouts: Object;
-	SplitWorkouts.subscribe((value: Object) => {
+	let split_workouts_temp: Record<string, Array<exercise>>;
+	let split_workouts: Record<string, Array<exercise>>;
+	SplitWorkouts.subscribe((value: any) => {
 		split_workouts = value;
 		split_workouts_temp = JSON.parse(JSON.stringify(value));
 	});
@@ -45,7 +45,7 @@
 		return true;
 	}
 
-	function array_move(arr, old_index, new_index) {
+	function array_move(arr: Array<any>, old_index: number, new_index: number) {
 		if (new_index >= arr.length) {
 			var k = new_index - arr.length + 1;
 			while (k--) {
@@ -55,13 +55,14 @@
 		arr.splice(new_index, 0, arr.splice(old_index, 1)[0]);
 	}
 
-	function debounce(func, wait, immediate) {
-		var timeout;
+	function debounce(func: Function, wait: number, immediate: boolean) {
+		let timeout: any;
 		return function () {
+			// @ts-ignore
 			var context = this,
 				args = arguments;
 			var later = function () {
-				timeout = null;
+				timeout = undefined;
 				if (!immediate) func.apply(context, args);
 			};
 			var callNow = immediate && !timeout;
@@ -89,13 +90,13 @@
 	}
 
 	function enter_editing_mode() {
-		[].forEach.call(exercise_grid.children, (entry: HTMLDivElement, i: number) => {
+		[].forEach.call(exercise_grid.children, (entry: HTMLDivElement) => {
 			entry.addEventListener('click', select_entry_for_editing);
 		});
 	}
 
 	function exit_editing_mode() {
-		[].forEach.call(exercise_grid.children, (entry: HTMLDivElement, i: number) => {
+		[].forEach.call(exercise_grid.children, (entry: HTMLDivElement) => {
 			entry.removeEventListener('click', select_entry_for_editing);
 		});
 	}
@@ -107,10 +108,10 @@
 			stat.classList.add('bg-blue-600');
 			stat.classList.remove('bg-teal-600');
 		});
-		selected_entry_index = null;
+		selected_entry_index = undefined;
 	}
 
-	function select_entry_for_editing(event: Event) {
+	function select_entry_for_editing(this: HTMLDivElement) {
 		deselect_entries();
 		let entry: HTMLDivElement = this;
 
@@ -119,16 +120,16 @@
 			child.classList.remove('bg-blue-600');
 			child.classList.add('bg-teal-600');
 		});
-		selected_entry_index = [].indexOf.call(exercise_grid.children, entry);
+		selected_entry_index = Array.prototype.indexOf.call(exercise_grid.children, entry);
 
-		name = entry.children[1].textContent;
-		reps = entry.children[2].textContent;
-		sets = entry.children[3].textContent;
-		load = entry.children[4].textContent;
+		name = entry.children[1].textContent || '';
+		reps = entry.children[2].textContent || '';
+		sets = entry.children[3].textContent || '';
+		load = entry.children[4].textContent || '';
 	}
 
 	function remove_entry(num: number) {
-		split_workouts[split_workout_name].forEach((exercise, i) => {
+		split_workouts[split_workout_name].forEach((exercise: exercise, i: number) => {
 			if (exercise.id === num) {
 				split_workouts[split_workout_name].splice(i, 1);
 			}
@@ -142,7 +143,7 @@
 	const handleTouchDrag = debounce(handle_touch_drag, 300, false);
 
 	function enter_reordering_mode() {
-		[].forEach.call(exercise_grid.children, (entry: HTMLDivElement, i: number) => {
+		[].forEach.call(exercise_grid.children, (entry: HTMLDivElement) => {
 			entry.draggable = true;
 
 			// To avoid scrolling down when rearranging with touch
@@ -157,7 +158,7 @@
 
 	function exit_reordering_mode() {
 		// Reverse enter_reordering_mode
-		[].forEach.call(exercise_grid.children, (entry: HTMLDivElement, i: number) => {
+		[].forEach.call(exercise_grid.children, (entry: HTMLDivElement) => {
 			entry.draggable = false;
 			[].forEach.call(entry.children, (child: HTMLElement) => {
 				child.style.touchAction = 'auto';
@@ -168,16 +169,16 @@
 	}
 
 	// Parsing functions for different events of touch and drag
-	function handle_normal_drag(event: DragEvent) {
+	function handle_normal_drag(this: any, event: DragEvent) {
 		handle_drag(event.clientY, this);
 	}
-	function handle_touch_drag(event: TouchEvent) {
+	function handle_touch_drag(this: any, event: TouchEvent) {
 		handle_drag(event.targetTouches[0].clientY, this);
 	}
 
 	// Main drag function
 	function handle_drag(clientY: number, element: HTMLElement) {
-		let exercise_div_index = [].indexOf.call(exercise_grid.children, element);
+		let exercise_div_index = Array.prototype.indexOf.call(exercise_grid.children, element);
 
 		// Make an array of all the elements' center y position
 		let elements_y_center: number[] = [];
@@ -217,22 +218,22 @@
 			split_workouts[split_workout_name].push({
 				id: id,
 				name: name,
-				reps: reps,
-				sets: sets,
-				load: load
+				reps: parseInt(reps),
+				sets: parseInt(sets),
+				load: parseInt(load)
 			});
 			SplitWorkouts.set(split_workouts);
 		} else if (reordering) {
 			reordering = false;
 			exit_reordering_mode();
 			SplitWorkouts.set(split_workouts);
-		} else if (editing && entry_is_valid()) {
+		} else if (editing && entry_is_valid() && selected_entry_index) {
 			editing = false;
 			let entry = split_workouts[split_workout_name][selected_entry_index];
 			entry.name = name;
-			entry.reps = reps;
-			entry.sets = sets;
-			entry.load = load;
+			entry.reps = parseInt(reps);
+			entry.sets = parseInt(sets);
+			entry.load = parseInt(load);
 			split_workouts[split_workout_name][selected_entry_index] = entry;
 			deselect_entries();
 			exit_editing_mode();
