@@ -1,30 +1,22 @@
 /// <reference types="@sveltejs/kit" />
 
 interface user {
-	username: string,
-	password: string,
-	splits: Record<string, split>,
-	workouts?: {
-
-	}
+	username: string;
+	password: string;
+	splits: Record<string, split>;
+	workouts?: Record<string, Array<exercise>>;
 }
 
 interface split {
-    name: string,
-    schedule: string[],
-    split_workouts: Record<string, split_workout>
-}
-
-interface split_workout {
-    name: string,
-    days: string[],
-    exercises: Record<string, exercise>
+	name: string;
+	schedule: string[];
+	split_workouts: Record<string, Array<exercise>>;
 }
 
 interface exercise {
-    id: number,
-    name: string,
-    reps: number,
-    sets: number,
-    load: number
+	id: number;
+	name: string;
+	reps: number;
+	sets: number;
+	load: number;
 }
