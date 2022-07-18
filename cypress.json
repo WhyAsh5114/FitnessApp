@@ -1,4 +1,4 @@
 {
-    "pluginsFile": "./cypress/plugins/index.cjs",
-    "experimentalSessionSupport": true
+	"pluginsFile": "./cypress/plugins/index.cjs",
+	"experimentalSessionSupport": true
 }

@@ -1,6 +1,6 @@
 /// <reference types="cypress" />
 
-const { createClient } = require("redis");
+const { createClient } = require('redis');
 
 // ***********************************************************
 // This example plugins/index.js can be used to load plugins
@@ -30,5 +30,5 @@ module.exports = (on, config) => {
 			await db.flushAll();
 			return null;
 		}
-	})
-}
+	});
+};
