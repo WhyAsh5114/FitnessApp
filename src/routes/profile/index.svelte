@@ -11,7 +11,7 @@
 		} else {
 			return {
 				props: {
-					username: session.user.username
+					username: session.username
 				}
 			};
 		}
