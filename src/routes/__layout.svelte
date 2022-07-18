@@ -2,10 +2,10 @@
 	import '../tailwind.css';
 	import { Modals, closeModal } from 'svelte-modals';
 	import { page } from '$app/stores';
-	import { blur, fly } from 'svelte/transition';
+	import { blur } from 'svelte/transition';
 	import Title from '$lib/title.svelte';
 	import Footer from '$lib/footer.svelte';
-	import { cubicIn, linear, quadInOut } from 'svelte/easing';
+	import { linear } from 'svelte/easing';
 
 	let url = $page;
 </script>
