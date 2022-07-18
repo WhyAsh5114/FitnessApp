@@ -1,6 +1,8 @@
 <script context="module" lang="ts">
+	import type { Load } from '@sveltejs/kit';
+
 	// If user is logged in, redirect to /profile
-	export async function load({ session }) {
+	export const load: Load = ({ session }) => {
 		if (session?.username) {
 			return {
 				status: 302,
@@ -9,7 +11,7 @@
 		} else {
 			return {};
 		}
-	}
+	};
 </script>
 
 <script lang="ts">
@@ -40,10 +42,14 @@
 				if (res.ok) {
 					window.location.href = '/profile';
 				} else {
-					openModal(Modal, { title: 'Request Error', messages: [res.status, res.statusText] });
+					openModal(Modal, {
+						title: 'Request Error',
+						messages: [res.status.toString(), res.statusText]
+					});
 				}
 			} catch (err) {
-				openModal(Modal, { title: 'Error', messages: [err] });
+				openModal(Modal, { title: 'Error', messages: ['Check console for more information'] });
+				console.error(err);
 			}
 		} else {
 			openModal(Modal, { title: 'Error', messages: errors });

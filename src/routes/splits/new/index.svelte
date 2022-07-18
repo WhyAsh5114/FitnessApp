@@ -1,5 +1,7 @@
 <script context="module" lang="ts">
-	export async function load({ session }) {
+	import type { Load } from '@sveltejs/kit';
+
+	export const load: Load = ({ session }) => {
 		// If user not logged in, redirect to login
 		if (!session?.username) {
 			return {
@@ -9,7 +11,7 @@
 		} else {
 			return {};
 		}
-	}
+	};
 </script>
 
 <script lang="ts">
@@ -31,9 +33,12 @@
 
 	async function check_split_validity() {
 		if (split_name !== '' && unique_workouts.length > 0) {
-			const res = await fetch('/api/isSplitCreatable', {
+			const res = await fetch('/api/doesSplitExist', {
 				method: 'POST',
-				body: split_name
+				headers: {
+					'Content-Type': 'application/json'
+				},
+				body: JSON.stringify({ split_name })
 			});
 			// If split not found in user data, it is ok to create new one otherwise
 			// there'll be a name conflict in database, older split will be overwritten
@@ -90,8 +95,8 @@
 		SplitName.set(split_name);
 		SplitSchedule.set(split_schedule);
 
-		let split_workouts: Object = {};
-		unique_workouts.forEach((workout: string, i) => {
+		let split_workouts: Record<string, string[]> = {};
+		unique_workouts.forEach((workout: string) => {
 			split_workouts[workout] = [];
 		});
 		SplitWorkouts.set(split_workouts);

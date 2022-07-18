@@ -1,6 +1,8 @@
 <script context="module" lang="ts">
+	import type { Load } from '@sveltejs/kit';
+
 	export const router = false;
-	export async function load({ session }) {
+	export const load: Load = ({ session }) => {
 		// If user not logged in, redirect to login
 		if (!session?.username) {
 			return {
@@ -15,7 +17,7 @@
 				}
 			};
 		}
-	}
+	};
 </script>
 
 <script lang="ts">

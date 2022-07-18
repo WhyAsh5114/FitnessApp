@@ -12,7 +12,7 @@
 
 	async function save_split() {
 		// Reset IDs
-		for (let [workout_name, workout] of Object.entries(split_workouts)) {
+		for (let [, workout] of Object.entries(split_workouts)) {
 			workout.forEach((exercise: { id: number }, i: number) => {
 				exercise.id = i + 1; // IDs start from 1
 			});

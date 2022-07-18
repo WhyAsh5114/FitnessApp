@@ -8,7 +8,7 @@
 	let valid: boolean;
 
 	let split_schedule: string[];
-	let unique_workouts: string[];
+	let unique_workouts: string[] = [];
 	SplitSchedule.subscribe((value: string[]) => {
 		split_schedule = value;
 		unique_workouts = [];
