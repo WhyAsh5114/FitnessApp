@@ -5,8 +5,8 @@
 
 	export let isOpen: boolean;
 	export let title: string;
-	export let messages = [];
-	export let onClose: Function = null;
+	export let messages: string[];
+	export let onClose: Function = () => {};
 
 	let textarea: HTMLUListElement;
 
