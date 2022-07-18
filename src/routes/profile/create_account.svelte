@@ -42,7 +42,13 @@
 					}
 				});
 				if (res.ok) {
-					window.location.href = '/profile';
+					openModal(Modal, {
+						title: 'Success',
+						messages: ['Account created successfully'],
+						onClose: () => {
+							window.location.href = '/profile';
+						}
+					});
 				} else {
 					openModal(Modal, { title: 'Request Error', messages: [res.status, res.statusText] });
 				}
