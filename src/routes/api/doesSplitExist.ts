@@ -2,9 +2,8 @@ import type { RequestHandler } from '@sveltejs/kit';
 import { getUser } from './_db';
 
 export const POST: RequestHandler = async ({ request, locals }) => {
-	const body = await request.json();
-
 	if (locals.username) {
+		const body = await request.json();
 		const user = JSON.parse(await getUser(locals.username));
 		if (!user['splits'][body.split_name]) {
 			return {
