@@ -1,5 +1,5 @@
 <script lang="ts">
-	export let color, title, content, split_name;
+	export let color: string, title: string, content: string, split_name: string;
 </script>
 
 <a
