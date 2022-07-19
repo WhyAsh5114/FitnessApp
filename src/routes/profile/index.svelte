@@ -35,9 +35,10 @@
 </script>
 
 <div class="flex flex-col place-items-center">
-	<p class="text-white w-full text-center mb-10">Hi {username}</p>
+	<p class="text-white w-full text-center mb-10" data-test="greet_element">Hi {username}</p>
 	<button
 		class="text-white text-md bg-red-500 px-3 py-1 rounded-full hover:bg-red-600"
-		on:click={logout}>Logout</button
+		on:click={logout}
+		data-test="logout_button">Logout</button
 	>
 </div>
