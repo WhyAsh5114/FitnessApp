@@ -4,7 +4,7 @@ test.beforeEach(async ({ page }) => {
 	await page.goto('/');
 });
 
-test.describe('Testing register', () => {
+test.describe('Testing home page functionality', () => {
 	test('should redirect to splits page', async ({ page }) => {
 		await page.locator('a', { hasText: 'Splits' }).click();
 		await expect(page).toHaveURL('/splits');
