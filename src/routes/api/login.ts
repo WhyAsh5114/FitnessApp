@@ -1,34 +1,46 @@
 import { loginUser, getUser } from './_db';
 import type { RequestHandler } from '@sveltejs/kit';
+import { serialize } from 'cookie';
 
 export const POST: RequestHandler = async ({ request }) => {
-	const body = await request.json();
-	const user = await getUser(body.username);
+	const body: { username: string; password: string } = await request.json();
 
-	if (!user) {
+	// Make sure user exists, otherwise return 404
+	try {
+		await getUser(body.username);
+	} catch (err) {
 		return {
 			status: 404,
 			body: {
-				message: 'Invalid credentials'
+				message: 'User does not exist, register first?'
 			}
 		};
-	} else {
-		try {
-			const id = await loginUser(body);
-			return {
-				status: 200,
-				headers: {
-					'set-cookie': `session_id=${id}; Max-Age=604800; Path=/; SameSite=Strict HttpOnly`,
-					body: 'Logged in successfully'
-				}
-			};
-		} catch (error) {
-			return {
-				status: 401,
-				body: {
-					message: 'Invalid credentials'
-				}
-			};
-		}
+	}
+
+	// Try logging in the user, if failed, return 401
+	try {
+		const id = await loginUser(body);
+		return {
+			status: 200,
+			headers: {
+				'set-cookie': serialize("session_id", id, {
+					sameSite: 'strict',
+					maxAge: 60 * 60 * 24 * 7,
+					path: '/',
+					httpOnly: true,
+					secure: true
+				})
+			},
+			body: {
+				message: 'Logged in successfully'
+			}
+		};
+	} catch (err) {
+		return {
+			status: 403,
+			body: {
+				message: 'Incorrect password'
+			}
+		};
 	}
 };
