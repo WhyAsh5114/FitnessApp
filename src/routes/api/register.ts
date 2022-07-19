@@ -3,15 +3,16 @@ import type { RequestHandler } from '@sveltejs/kit';
 
 export const POST: RequestHandler = async ({ request }) => {
 	const body = await request.json();
-	const user = await getUser(body['username']);
-	if (user) {
+
+	try {
+		await getUser(body['username']);
 		return {
 			status: 409,
 			body: {
 				message: 'User already exists'
 			}
 		};
-	} else {
+	} catch (err) {
 		await registerUser(body);
 		return {
 			status: 201,
