@@ -26,7 +26,7 @@
 </script>
 
 {#if isOpen}
-	<div role="dialog" class="modal">
+	<div role="dialog" class="modal" data-test="modal">
 		<div class="contents">
 			<h2>{title}</h2>
 			<ul bind:this={textarea} />
