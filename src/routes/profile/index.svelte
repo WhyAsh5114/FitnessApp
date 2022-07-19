@@ -25,10 +25,7 @@
 
 	async function logout() {
 		await fetch('/api/logout', {
-			method: 'GET',
-			headers: {
-				'Content-Type': 'application/json'
-			}
+			method: 'GET'
 		});
 		window.location.href = '/profile/login';
 	}
