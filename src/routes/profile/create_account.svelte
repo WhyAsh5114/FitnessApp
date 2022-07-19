@@ -52,9 +52,10 @@
 						}
 					});
 				} else {
+					const body = await res.json();
 					openModal(Modal, {
-						title: 'Request Error',
-						messages: [res.status.toString(), res.statusText]
+						title: 'Error',
+						messages: [body.message]
 					});
 				}
 			} catch (err) {
