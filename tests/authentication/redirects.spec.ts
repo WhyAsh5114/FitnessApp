@@ -18,17 +18,6 @@ test.describe('Testing redirects of protected routes', () => {
 		await expect(page).toHaveURL('/profile/login');
 	});
 
-	test('should throw error (User not found)', async ({ page }) => {
-		await page.fill('input[placeholder=Username]', 'unknown_username');
-		await page.fill('input[placeholder=Password]', 'unknown_password');
-		await page.locator('button', { hasText: 'Submit' }).click();
-
-		await page.locator('ul[data-test="message_list"]').waitFor({ state: 'visible' });
-		expect(
-			await page.locator('li', { hasText: 'User does not exist, register first?' }).count()
-		).toEqual(1);
-	});
-
 	test("'Create an account' should redirect to create account page", async ({ page }) => {
 		await page.locator('a', { hasText: 'Create an account' }).click();
 		await expect(page).toHaveURL('/profile/create_account');
