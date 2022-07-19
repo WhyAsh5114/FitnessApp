@@ -24,10 +24,10 @@
 	async function login() {
 		let errors = [];
 		if (!username) {
-			errors.push('Username should not be empty');
+			errors.push('Username cannot be empty');
 		}
 		if (!password) {
-			errors.push('Password should not be empty');
+			errors.push('Password cannot be empty');
 		}
 
 		if (errors.length === 0) {
@@ -42,9 +42,10 @@
 				if (res.ok) {
 					window.location.href = '/profile';
 				} else {
+					const body = await res.json();
 					openModal(Modal, {
-						title: 'Request Error',
-						messages: [res.status.toString(), res.statusText]
+						title: 'Error',
+						messages: [body.message]
 					});
 				}
 			} catch (err) {
