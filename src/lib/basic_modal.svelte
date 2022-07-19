@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { onDestroy, onMount } from 'svelte';
+	import { onDestroy } from 'svelte';
 
 	import { closeModal } from 'svelte-modals';
 
@@ -7,16 +7,6 @@
 	export let title: string;
 	export let messages: string[];
 	export let onClose: Function = () => {};
-
-	let textarea: HTMLUListElement;
-
-	onMount(() => {
-		messages.forEach((message) => {
-			let message_element = document.createElement('li');
-			message_element.textContent = message;
-			textarea.appendChild(message_element);
-		});
-	});
 
 	if (onClose !== null) {
 		onDestroy(() => {
@@ -26,10 +16,14 @@
 </script>
 
 {#if isOpen}
-	<div role="dialog" class="modal" data-test="modal">
+	<div role="dialog" class="modal">
 		<div class="contents">
 			<h2>{title}</h2>
-			<ul bind:this={textarea} />
+			<ul data-test="message_list">
+				{#each messages as message}
+					<li>{message}</li>
+				{/each}
+			</ul>
 			<div class="actions">
 				<button class="ok-btn" on:click={closeModal}>OK</button>
 			</div>
