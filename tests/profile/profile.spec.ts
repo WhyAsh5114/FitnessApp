@@ -22,7 +22,8 @@ test.beforeEach(async ({ page, request }) => {
 	await page.goto('/profile');
 });
 
-test.describe('Testing logout functionality', () => {
+test.describe('Testing profile page functionality', () => {
+	// Should move to different test
 	test('should have "session_id" cookie in browser storage', async ({ page }) => {    
         const cookies = await page.context().cookies();
         const session_id_cookie = cookies.find((cookie) => cookie.name === 'session_id')
@@ -34,6 +35,7 @@ test.describe('Testing logout functionality', () => {
 		await expect(greet_element).toHaveText(`Hi ${account_details.username}`)
 	})
 
+	// Should move to different test
 	test('should delete cookie after clicking logout and redirect to login', async ({ page }) => {
 		await page.locator('[data-test=logout_button]').click();
 
