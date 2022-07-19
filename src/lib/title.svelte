@@ -14,5 +14,7 @@
 			>MyFit</a
 		>
 	</div>
-	<a href="/profile"><img src="/profile.png" alt="profile" class="w-11 md:w-14 lg:w-20 mr-3" /></a>
+	<a href="/profile" data-test="profile_button"
+		><img src="/profile.png" alt="profile" class="w-11 md:w-14 lg:w-20 mr-3" /></a
+	>
 </div>
