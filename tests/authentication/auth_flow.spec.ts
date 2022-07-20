@@ -70,4 +70,26 @@ test.describe('Test authentication flows', () => {
 			await page.locator('li', { hasText: 'User does not exist, register first?' }).count()
 		).toEqual(1);
 	});
+
+	test('should throw error (Incorrect password)', async ({ page, request }) => {
+		const client = createClient();
+		await client.connect();
+		await client.flushAll();
+
+		const res = await request.post('/api/register', {
+			data: {
+				username: 'sample_username',
+				password: 'sample_password'
+			}
+		});
+		expect(res.ok()).toBeTruthy();
+
+		await page.goto('/profile/login')
+		await page.fill('input[placeholder=Username]', 'sample_username');
+		await page.fill('input[placeholder=Password]', 'wrong_password');
+		await page.locator('button', { hasText: 'Submit' }).click();
+
+		await page.locator('ul[data-test="message_list"]').waitFor({ state: 'visible' });
+		expect(await page.locator('li', { hasText: 'Incorrect password' }).count()).toEqual(1);
+	});
 })

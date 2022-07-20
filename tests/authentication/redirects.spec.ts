@@ -22,4 +22,26 @@ test.describe('Testing redirects of protected routes', () => {
 		await page.locator('a', { hasText: 'Create an account' }).click();
 		await expect(page).toHaveURL('/profile/create_account');
 	});
+
+	test('should redirect to /profile if logged in', async ({ page }) => {
+		const client = createClient();
+		await client.connect();
+		await client.flushAll();
+
+		const account_details = { username: 'sample_username', password: 'sample_password' }
+		const register_res = await page.request.fetch('/api/register', {
+			method: 'POST',
+			data: account_details
+		});
+		expect(register_res.ok()).toBeTruthy();
+
+		const login_res = await page.request.fetch('/api/login', {
+			method: 'POST',
+			data: account_details
+		});
+		expect(login_res.ok()).toBeTruthy();
+		
+		await page.goto('/profile/create_account');
+		await expect(page).toHaveURL('/profile');
+	})
 });

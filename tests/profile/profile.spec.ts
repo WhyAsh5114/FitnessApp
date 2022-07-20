@@ -23,26 +23,8 @@ test.beforeEach(async ({ page, request }) => {
 });
 
 test.describe('Testing profile page functionality', () => {
-	// Should move to different test
-	test('should have "session_id" cookie in browser storage', async ({ page }) => {    
-        const cookies = await page.context().cookies();
-        const session_id_cookie = cookies.find((cookie) => cookie.name === 'session_id')
-        expect(session_id_cookie).toBeDefined();
-	});
-
 	test('should show username on profile page', async ({ page }) => {
 		const greet_element = page.locator('[data-test=greet_element]');
 		await expect(greet_element).toHaveText(`Hi ${account_details.username}`)
-	})
-
-	// Should move to different test
-	test('should delete cookie after clicking logout and redirect to login', async ({ page }) => {
-		await page.locator('[data-test=logout_button]').click();
-
-		const cookies = await page.context().cookies();
-        const session_id_cookie = cookies.find((cookie) => cookie.name === 'session_id')
-        expect(session_id_cookie).toBeUndefined();
-
-		await expect(page).toHaveURL('/profile/login');
 	})
 });
