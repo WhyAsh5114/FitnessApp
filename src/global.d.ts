@@ -1,5 +1,9 @@
 /// <reference types="@sveltejs/kit" />
 
+interface MyWindow extends Window {
+	mounted: boolean | undefined;
+}
+
 interface user {
 	username: string;
 	password: string;

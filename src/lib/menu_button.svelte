@@ -1,9 +1,8 @@
-<script>
-	// @ts-ignore
-	export let color,
-		imgPath,
-		title,
-		content,
+<script lang="ts">
+	export let color: string,
+		imgPath: string,
+		title: string,
+		content: string,
 		link = title.toLowerCase();
 </script>
 

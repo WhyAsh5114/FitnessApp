@@ -28,7 +28,7 @@ test.describe('Testing redirects of protected routes', () => {
 		await client.connect();
 		await client.flushAll();
 
-		const account_details = { username: 'sample_username', password: 'sample_password' }
+		const account_details = { username: 'sample_username', password: 'sample_password' };
 		const register_res = await page.request.fetch('/api/register', {
 			method: 'POST',
 			data: account_details
@@ -40,8 +40,8 @@ test.describe('Testing redirects of protected routes', () => {
 			data: account_details
 		});
 		expect(login_res.ok()).toBeTruthy();
-		
+
 		await page.goto('/profile/create_account');
 		await expect(page).toHaveURL('/profile');
-	})
+	});
 });

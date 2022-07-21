@@ -1,41 +1,29 @@
-import { test, expect } from '@playwright/test';
-import { createClient } from 'redis';
-
-const account_details = { username: 'sample_username', password: 'sample_password' };
-
-test.beforeEach(async ({ page, request }) => {
-	const client = createClient();
-	await client.connect();
-	await client.flushAll();
-
-	const register_res = await request.post('/api/register', {
-		data: account_details
-	});
-	expect(register_res.ok()).toBeTruthy();
-
-	const login_res = await page.request.fetch('/api/login', {
-		method: 'POST',
-		data: account_details
-	});
-	expect(login_res.ok()).toBeTruthy();
-
-	await page.goto('/profile');
-});
+import { testWithAccount, expect } from '../fixtures.js';
+import { test } from '@playwright/test';
 
 test.describe('Testing cookie functionality', () => {
-    test('should have "session_id" cookie in browser storage', async ({ page }) => {
-        const cookies = await page.context().cookies();
-        const session_id_cookie = cookies.find((cookie) => cookie.name === 'session_id')
-        expect(session_id_cookie).toBeDefined();
-    });
-
-	test('should delete cookie after clicking logout and redirect to login', async ({ page }) => {
-		await page.locator('[data-test=logout_button]').click();
-
+	testWithAccount('should have "session_id" cookie in browser storage', async ({ page }) => {
 		const cookies = await page.context().cookies();
-        const session_id_cookie = cookies.find((cookie) => cookie.name === 'session_id')
-        expect(session_id_cookie).toBeUndefined();
+		const session_id_cookie = cookies.find((cookie) => cookie.name === 'session_id');
+		expect(session_id_cookie).toBeDefined();
+	});
 
-		await expect(page).toHaveURL('/profile/login');
-	})
-})
+	testWithAccount(
+		'should delete cookie after clicking logout and redirect to login',
+		async ({ page }) => {
+			await Promise.all([
+				page.waitForResponse(
+					(response) => response.url().includes('/api/logout') && response.status() === 201,
+					{ timeout: 5000 }
+				),
+				page.locator('button', { hasText: 'Logout' }).click()
+			]);
+
+			const cookies = await page.context().cookies();
+			const session_id_cookie = cookies.find((cookie) => cookie.name === 'session_id');
+			expect(session_id_cookie).toBeUndefined();
+
+			await expect(page).toHaveURL('/profile/login');
+		}
+	);
+});

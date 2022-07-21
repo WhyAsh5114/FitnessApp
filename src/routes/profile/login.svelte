@@ -1,5 +1,6 @@
 <script context="module" lang="ts">
 	import type { Load } from '@sveltejs/kit';
+	declare let window: MyWindow;
 
 	// If user is logged in, redirect to /profile
 	export const load: Load = ({ session }) => {
@@ -17,9 +18,14 @@
 <script lang="ts">
 	import { openModal } from 'svelte-modals';
 	import Modal from '$lib/basic_modal.svelte';
+	import { onMount } from 'svelte';
 
 	let username: string;
 	let password: string;
+
+	onMount(() => {
+		window.mounted = true;
+	})
 
 	async function login() {
 		let errors = [];
